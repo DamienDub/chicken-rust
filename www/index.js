@@ -1,3 +1,5 @@
 import * as wasm from "chicken-rust";
 
-wasm.greet();
+console.log(wasm.sha1());
+console.log(wasm.base64_encode("test"));
+console.log(wasm.base64_decode(wasm.base64_encode("test")));
