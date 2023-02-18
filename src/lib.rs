@@ -3,6 +3,7 @@ mod utils;
 use base64::{engine::general_purpose, Engine as _};
 use hex;
 use sha1::{Digest, Sha1};
+use urlencoding::{decode, encode};
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -10,6 +11,18 @@ use wasm_bindgen::prelude::*;
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+#[derive(Debug)]
+pub struct RustError {
+    pub message: String,
+}
+
+use wasm_bindgen::JsValue;
+impl From<RustError> for JsValue {
+    fn from(error: RustError) -> Self {
+        JsValue::from_str(&error.message)
+    }
+}
 
 #[wasm_bindgen]
 extern "C" {
@@ -22,27 +35,43 @@ pub fn greet() {
 }
 
 #[wasm_bindgen]
-pub fn sha1() -> String {
+pub fn sha1(input: &str) -> String {
     let mut hasher = Sha1::new();
-    hasher.update(b"Hello, world!");
-    let result = hasher.finalize();
-    return hex::encode(result);
+    hasher.update(input);
+    return hex::encode(hasher.finalize());
 }
 
 #[wasm_bindgen]
-pub fn base64_encode(orig: &str) -> String {
-    //let orig = b"data";
-    let encoded = general_purpose::STANDARD_NO_PAD.encode(orig);
-    return encoded;
+pub fn base64_encode(input: &str) -> String {
+    return general_purpose::STANDARD_NO_PAD.encode(input);
 }
 
 #[wasm_bindgen]
-pub fn base64_decode(orig: &str) -> String {
-    match general_purpose::STANDARD_NO_PAD.decode(orig) {
+pub fn base64_decode(input: &str) -> Result<String, RustError> {
+    match general_purpose::STANDARD_NO_PAD.decode(input) {
         Ok(result) => match String::from_utf8(result) {
-            Ok(string_result) => string_result,
-            Err(_) => String::from("Invalid UTF-8 encoding"),
+            Ok(string_result) => Ok(string_result),
+            Err(_) => Err(RustError {
+                message: "Failed to turn bytes into UTF-8 string".to_string(),
+            }),
         },
-        Err(_) => String::from("Failed to decode base64 string"),
+        Err(_) => Err(RustError {
+            message: "Failed to decode base 64 string".to_string(),
+        }),
+    }
+}
+
+#[wasm_bindgen]
+pub fn url_encode(input: &str) -> String {
+    return encode(input);
+}
+
+#[wasm_bindgen]
+pub fn url_decode(input: &str) -> Result<String, RustError> {
+    match decode(input) {
+        Ok(string_result) => Ok(string_result),
+        Err(_) => Err(RustError {
+            message: "Failed to decode encoded URL".to_string(),
+        }),
     }
 }

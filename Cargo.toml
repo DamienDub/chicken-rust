@@ -1,6 +1,9 @@
 [package]
 name = "chicken-rust"
 version = "0.1.0"
+description = "An online Rust-based toolbox for data manipulation"
+repository = "https://github.com/DamienDub/chicken-rust"
+license = "MIT"
 authors = ["dub"]
 edition = "2018"
 
@@ -15,6 +18,7 @@ wasm-bindgen = "0.2.63"
 sha1 = "0.10.1"
 hex = "0.4.3"
 base64 = "0.21.0"
+urlencoding = "1.0.1"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
