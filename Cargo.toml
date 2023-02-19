@@ -3,7 +3,6 @@ name = "chicken-rust"
 version = "0.1.0"
 description = "An online Rust-based toolbox for data manipulation"
 repository = "https://github.com/DamienDub/chicken-rust"
-license = "MIT"
 authors = ["dub"]
 edition = "2018"
 
