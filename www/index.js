@@ -1,4 +1,4 @@
-import * as wasm from "../pkg";
+import * as wasm from "pkg/chicken_rust.js";
 
 console.log("SHA-1: " + wasm.sha1("test"));
 
