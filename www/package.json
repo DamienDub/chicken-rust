@@ -7,28 +7,23 @@
   "bin": {
     "create-wasm-app": ".bin/create-wasm-app.js"
   },
-
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "start": "webpack-dev-server"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rustwasm/create-wasm-app.git"
   },
-
   "keywords": [
     "webassembly",
     "wasm",
     "rust",
     "webpack"
   ],
-  
   "dependencies": {
-    "chicken-rust": "file:../pkg"
+    "chicken-rust": "file:./pkg"
   },
-  
   "devDependencies": {
     "hello-wasm-pack": "^0.1.0",
     "webpack": "^4.29.3",
