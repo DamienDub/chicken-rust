@@ -5,6 +5,7 @@
   ],
   "description": "An online Rust-based toolbox for data manipulation",
   "version": "0.1.0",
+  "license": "Unknown yet",
   "repository": {
     "type": "git",
     "url": "https://github.com/DamienDub/chicken-rust"

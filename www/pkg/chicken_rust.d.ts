@@ -28,3 +28,7 @@ export function url_encode(input: string): string;
 * @returns {string}
 */
 export function url_decode(input: string): string;
+/**
+* @returns {string}
+*/
+export function aes_encrypt(): string;

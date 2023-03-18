@@ -6,6 +6,13 @@ use sha1::{Digest, Sha1};
 use urlencoding::{decode, encode};
 use wasm_bindgen::prelude::*;
 
+use aes::Aes128;
+use aes::cipher::{
+    BlockCipher, BlockEncrypt, BlockDecrypt, KeyInit,
+    generic_array::GenericArray,
+};
+
+
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
 #[cfg(feature = "wee_alloc")]
@@ -74,4 +81,24 @@ pub fn url_decode(input: &str) -> Result<String, RustError> {
             message: "Failed to decode encoded URL".to_string(),
         }),
     }
+}
+
+#[wasm_bindgen]
+pub fn aes_encrypt() -> String {
+
+    let key = GenericArray::from([0u8; 16]);
+    let mut block = GenericArray::from([42u8; 16]);
+
+    let cipher = Aes128::new(&key);
+
+    let block_copy = block.clone();
+
+// Encrypt block in-place
+cipher.encrypt_block(&mut block);
+
+// And decrypt it back
+cipher.decrypt_block(&mut block);
+assert_eq!(block, block_copy);
+
+    return "ok".to_string();
 }

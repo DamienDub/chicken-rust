@@ -29,7 +29,13 @@ import('chicken-rust').then(chickenRust => {
     console.error(error);
   }
 
-
+  try {
+    let result = chickenRust.aes_encrypt();
+    document.write("<h2>Encryption: " + result + "</h2>");
+  }
+  catch (error) {
+    console.error(error);
+  }
 
 }).catch(error => {
   console.error(error);

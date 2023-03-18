@@ -232,6 +232,22 @@ export function url_decode(input) {
     }
 }
 
+/**
+* @returns {string}
+*/
+export function aes_encrypt() {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.aes_encrypt(retptr);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        return getStringFromWasm0(r0, r1);
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+        wasm.__wbindgen_free(r0, r1);
+    }
+}
+
 export function __wbg_alert_a3088e6c1c5fe914(arg0, arg1) {
     alert(getStringFromWasm0(arg0, arg1));
 };
