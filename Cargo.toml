@@ -20,6 +20,7 @@ hex = "0.4.3"
 base64 = "0.21.0"
 urlencoding = "1.0.1"
 aes = "0.8.2"
+cbc = "0.1.2"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -31,6 +32,7 @@ console_error_panic_hook = { version = "0.1.6", optional = true }
 # compared to the default allocator's ~10K. It is slower than the default
 # allocator, however.
 wee_alloc = { version = "0.4.5", optional = true }
+hex-literal = "0.3.4"
 
 
 [dev-dependencies]

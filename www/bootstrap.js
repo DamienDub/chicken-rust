@@ -30,8 +30,11 @@ import('chicken-rust').then(chickenRust => {
   }
 
   try {
-    let result = chickenRust.aes_encrypt();
-    document.write("<h2>Encryption: " + result + "</h2>");
+    let encryption_result = chickenRust.aes_cbc_128_encrypt("Well hello there", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111");
+    document.write("<h2>Encryption: " + encryption_result + "</h2>");
+ 
+    let decryption_result = chickenRust.aes_cbc_128_decrypt(encryption_result, "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111");
+    document.write("<h2>Deccryption: " + decryption_result + "</h2>");
   }
   catch (error) {
     console.error(error);

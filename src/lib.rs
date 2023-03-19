@@ -1,17 +1,14 @@
 mod utils;
 
+use wasm_bindgen::prelude::*;
+
 use base64::{engine::general_purpose, Engine as _};
 use hex;
 use sha1::{Digest, Sha1};
 use urlencoding::{decode, encode};
-use wasm_bindgen::prelude::*;
 
-use aes::Aes128;
-use aes::cipher::{
-    BlockCipher, BlockEncrypt, BlockDecrypt, KeyInit,
-    generic_array::GenericArray,
-};
-
+// AES
+use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -84,21 +81,136 @@ pub fn url_decode(input: &str) -> Result<String, RustError> {
 }
 
 #[wasm_bindgen]
-pub fn aes_encrypt() -> String {
+pub fn aes_cbc_128_encrypt(plaintext: &str, key: &str, iv: &str) -> Result<String, RustError> {
+    // Get plaintext as bytes
+    let plaintext = plaintext.as_bytes();
 
-    let key = GenericArray::from([0u8; 16]);
-    let mut block = GenericArray::from([42u8; 16]);
+    // Get key as bytes
+    let mut key_bytes = [0x42; 16];
+    match hex::decode(key) {
+        Ok(bytes_result) => {
+            if bytes_result.len() != 16 {
+                return Err(RustError {
+                    message: "The key is not 16 bytes length".to_string(),
+                });
+            }
+            key_bytes.copy_from_slice(&bytes_result)
+        }
+        Err(_) => {
+            return Err(RustError {
+                message: "The key is not an hexadecimal string".to_string(),
+            })
+        }
+    }
 
-    let cipher = Aes128::new(&key);
+    // Get IV as bytes
+    let mut iv_bytes = [0x24; 16];
+    match hex::decode(iv) {
+        Ok(bytes_result) => {
+            if bytes_result.len() != 16 {
+                return Err(RustError {
+                    message: "The IV is not 16 bytes length".to_string(),
+                });
+            }
+            iv_bytes.copy_from_slice(&bytes_result)
+        }
+        Err(_) => {
+            return Err(RustError {
+                message: "The IV is not an hexadecimal string".to_string(),
+            })
+        }
+    }
 
-    let block_copy = block.clone();
+    // Make buffer with proper length
+    let plaintext_len = plaintext.len();
+    let mut buf = vec![0u8; closest_upper_multiple_(plaintext_len, 128)];
+    buf[..plaintext_len].copy_from_slice(&plaintext);
 
-// Encrypt block in-place
-cipher.encrypt_block(&mut block);
+    // Encrypt
+    type Aes128CbcEnc = cbc::Encryptor<aes::Aes128>;
+    match Aes128CbcEnc::new(&key_bytes.into(), &iv_bytes.into())
+        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext_len)
+    {
+        Ok(bytes_result) => Ok(hex::encode(&bytes_result)),
+        Err(_) => Err(RustError {
+            message: "Failed to perform AES encryption".to_string(),
+        }),
+    }
+}
 
-// And decrypt it back
-cipher.decrypt_block(&mut block);
-assert_eq!(block, block_copy);
+#[wasm_bindgen]
+pub fn aes_cbc_128_decrypt(ciphertext: &str, key: &str, iv: &str) -> Result<String, RustError> {
+    // Get ciphertext as bytes
+    let mut ciphertext_bytes: Vec<u8>;
+    match hex::decode(ciphertext) {
+        Ok(bytes_result) => {
+            ciphertext_bytes = bytes_result;
+        }
+        Err(_) => {
+            return Err(RustError {
+                message: "The ciphertext is not an hexadecimal string".to_string(),
+            })
+        }
+    }
 
-    return "ok".to_string();
+    // Get key as bytes
+    let mut key_bytes = [0x42; 16];
+    match hex::decode(key) {
+        Ok(bytes_result) => {
+            if bytes_result.len() != 16 {
+                return Err(RustError {
+                    message: "The key is not 16 bytes length".to_string(),
+                });
+            }
+            key_bytes.copy_from_slice(&bytes_result)
+        }
+        Err(_) => {
+            return Err(RustError {
+                message: "The key is not an hexadecimal string".to_string(),
+            })
+        }
+    }
+
+    // Get IV as bytes
+    let mut iv_bytes = [0x24; 16];
+    match hex::decode(iv) {
+        Ok(bytes_result) => {
+            if bytes_result.len() != 16 {
+                return Err(RustError {
+                    message: "The IV is not 16 bytes length".to_string(),
+                });
+            }
+            iv_bytes.copy_from_slice(&bytes_result)
+        }
+        Err(_) => {
+            return Err(RustError {
+                message: "The IV is not an hexadecimal string".to_string(),
+            })
+        }
+    }
+
+    // Decrypt
+    type Aes128CbcDec = cbc::Decryptor<aes::Aes128>;
+    match Aes128CbcDec::new(&key_bytes.into(), &iv_bytes.into())
+        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
+    {
+        Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
+            Ok(string_result) => Ok(string_result.to_string()),
+            Err(_) => Err(RustError {
+                message: "Failed to perform AES decryption".to_string(),
+            }),
+        },
+        Err(_) => Err(RustError {
+            message: "Failed to perform AES decryption".to_string(),
+        }),
+    }
+}
+
+fn closest_upper_multiple_(number: usize, multiple: usize) -> usize {
+    let remainder = number % multiple;
+    if remainder == 0 {
+        number
+    } else {
+        number + multiple - remainder
+    }
 }
