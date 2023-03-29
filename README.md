@@ -1,71 +1,74 @@
-<div align="center">
+# Yew Trunk Template
 
-  <h1><code>Chicken Rust</code></h1>
+This is a fairly minimal template for a Yew app that's built with [Trunk].
 
-  <strong>A template for kick starting a Rust and WebAssembly project using <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a>.</strong>
+## Usage
 
-  <p>
-    <a href="https://travis-ci.org/rustwasm/wasm-pack-template"><img src="https://img.shields.io/travis/rustwasm/wasm-pack-template.svg?style=flat-square" alt="Build Status" /></a>
-  </p>
+For a more thorough explanation of Trunk and its features, please head over to the [repository][trunk].
 
-  <h3>
-    <a href="https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html">Tutorial</a>
-    <span> | </span>
-    <a href="https://discordapp.com/channels/442252698964721669/443151097398296587">Chat</a>
-  </h3>
+### Installation
 
-  <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
-</div>
+If you don't already have it installed, it's time to install Rust: <https://www.rust-lang.org/tools/install>.
+The rest of this guide assumes a typical Rust installation which contains both `rustup` and Cargo.
 
-## About
+To compile Rust to WASM, we need to have the `wasm32-unknown-unknown` target installed.
+If you don't already have it, install it with the following command:
 
-[**📚 Read this template tutorial! 📚**][template-docs]
-
-This template is designed for compiling Rust libraries into WebAssembly and
-publishing the resulting package to NPM.
-
-Be sure to check out [other `wasm-pack` tutorials online][tutorials] for other
-templates and usages of `wasm-pack`.
-
-[tutorials]: https://rustwasm.github.io/docs/wasm-pack/tutorials/index.html
-[template-docs]: https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html
-
-## 🚴 Usage
-
-### 🐑 Use `cargo generate` to Clone this Template
-
-[Learn more about `cargo generate` here.](https://github.com/ashleygwilliams/cargo-generate)
-
-```
-cargo generate --git https://github.com/rustwasm/wasm-pack-template.git --name my-project
-cd my-project
+```bash
+rustup target add wasm32-unknown-unknown
 ```
 
-### 🛠️ Build with `wasm-pack build`
+Now that we have our basics covered, it's time to install the star of the show: [Trunk].
+Simply run the following command to install it:
 
-```
-wasm-pack build
-```
-
-### 🔬 Test in Headless Browsers with `wasm-pack test`
-
-```
-wasm-pack test --headless --firefox
+```bash
+cargo install trunk wasm-bindgen-cli
 ```
 
-### 🎁 Publish to NPM with `wasm-pack publish`
+That's it, we're done!
 
+### Running
+
+```bash
+trunk serve
 ```
-wasm-pack publish
+
+Rebuilds the app whenever a change is detected and runs a local server to host it.
+
+There's also the `trunk watch` command which does the same thing but without hosting it.
+
+### Release
+
+```bash
+trunk build --release
 ```
 
-## 🔋 Batteries Included
+This builds the app in release mode similar to `cargo build --release`.
+You can also pass the `--release` flag to `trunk serve` if you need to get every last drop of performance.
 
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.
-* `LICENSE-APACHE` and `LICENSE-MIT`: most Rust projects are licensed this way, so these are included for you
+Unless overwritten, the output will be located in the `dist` directory.
 
+## Using this template
+
+There are a few things you have to adjust when adopting this template.
+
+### Remove example code
+
+The code in [src/main.rs](src/main.rs) specific to the example is limited to only the `view` method.
+There is, however, a fair bit of Sass in [index.scss](index.scss) you can remove.
+
+### Update metadata
+
+Update the `name`, `version`, `description` and `repository` fields in the [Cargo.toml](Cargo.toml) file.
+The [index.html](index.html) file also contains a `<title>` tag that needs updating.
+
+Finally, you should update this very `README` file to be about your app.
+
+### License
+
+The template ships with both the Apache and MIT license.
+If you don't want to have your app dual licensed, just remove one (or both) of the files and update the `license` field in `Cargo.toml`.
+
+There are two empty spaces in the MIT license you need to fill out: `` and `Damien Dub <damien.dub@gmail.com>`.
+
+[trunk]: https://github.com/thedodd/trunk

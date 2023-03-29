@@ -1,43 +1,20 @@
 [package]
-name = "chicken-rust"
+name = "trunk-template"
 version = "0.1.0"
-description = "An online Rust-based toolbox for data manipulation"
-repository = "https://github.com/DamienDub/chicken-rust"
-authors = ["dub"]
-edition = "2018"
-license = "Unknown yet"
+edition = "2021"
+description = "Template for starting a Yew project using Trunk"
+readme = "README.md"
+repository = "https://github.com/yewstack/yew-trunk-minimal-template"
+license = "MIT OR Apache-2.0"
+keywords = ["yew", "trunk"]
+categories = ["gui", "wasm", "web-programming"]
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
-[features]
-default = ["console_error_panic_hook"]
-
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-wasm-bindgen = "0.2.63"
+yew = { version="0.20", features=["csr"] }
 sha1 = "0.10.1"
 hex = "0.4.3"
 base64 = "0.21.0"
 urlencoding = "1.0.1"
 aes = "0.8.2"
 cbc = "0.1.2"
-
-# The `console_error_panic_hook` crate provides better debugging of panics by
-# logging them with `console.error`. This is great for development, but requires
-# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
-# code size when deploying.
-console_error_panic_hook = { version = "0.1.6", optional = true }
-
-# `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
-# compared to the default allocator's ~10K. It is slower than the default
-# allocator, however.
-wee_alloc = { version = "0.4.5", optional = true }
-hex-literal = "0.3.4"
-
-
-[dev-dependencies]
-wasm-bindgen-test = "0.3.13"
-
-[profile.release]
-# Tell `rustc` to optimize for small code size.
-opt-level = "s"
