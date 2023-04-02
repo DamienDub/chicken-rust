@@ -1,25 +1,56 @@
-//use yew::prelude::*;
-use yew::{function_component, html, Html, Properties};
+use yew::prelude::*;
+use yew_router::prelude::*;
 
 use base64::{engine::general_purpose, Engine as _};
 use hex;
-use sha1::{Digest, Sha1};
 use urlencoding::{decode, encode};
 
 // AES
 use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 
+#[derive(Clone, Routable, PartialEq)]
+enum Route {
+    #[at("/")]
+    Home,
 
-#[derive(Properties, PartialEq)]
-pub struct Props {
-    pub is_loading: bool,
+    #[at("/encode")]
+    Encode,
+
+    #[at("/encode/base64")]
+    Base64,
+
+    #[not_found]
+    #[at("/404")]
+    NotFound,
 }
 
-
+fn switch(routes: Route) -> Html {
+    match routes {
+        Route::Home => html! {
+           <Home />
+        },
+        Route::Encode => html! {
+            <Encode />
+        },
+        Route::Base64 => html! {
+            <Base64 />
+        },
+        Route::NotFound => html! { <h1>{ "404" }</h1> },
+    }
+}
 
 #[function_component(App)]
 pub fn app() -> Html {
+    html! {
+        <BrowserRouter>
+            <Switch<Route> render={switch} /> // <- must be child of <BrowserRouter>
+        </BrowserRouter>
+    }
+}
 
+#[function_component(Home)]
+pub fn home() -> Html {
+    let navigator = use_navigator().unwrap();
 
     html! {
         <main>
@@ -27,25 +58,53 @@ pub fn app() -> Html {
             <span class="subtitle">{ "Fast. Secure. Open source" }</span>
 
 
-            <p> {"Base 64 encoding of test: "} { base64_encode("test") }</p>
-            <p> {"Base 64 decoding of dGVzdA: "} { base64_decode("dGVzdA") }</p>
-            <p> {"URL encoding of http://site.com/ye ye ye: "} { url_encode("http://site.com/ye ye ye") }</p>
-            <p> {"URL decoding of http%3A%2F%2Fsite.com%2Fye%20ye%20yee: "} { url_decode("http%3A%2F%2Fsite.com%2Fye%20ye%20ye") }</p>
-            <p> {"AES encryption: "} { aes_cbc_128_encrypt("Anna tu sens mauvais des fesses", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
-            <p> {"AES decryption of previous message: "} { aes_cbc_128_decrypt("2bddb633cad52eb64c05aa283c0ced7b846f8468266c09f801ba118976dd459a", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
+            <div>
+                <p> {"Base 64 encoding of test: "} { base64_encode("test") }</p>
+                <p> {"Base 64 decoding of dGVzdA: "} { base64_decode("dGVzdA") }</p>
+                <p> {"URL encoding of http://site.com/ye ye ye: "} { url_encode("http://site.com/ye ye ye") }</p>
+                <p> {"URL decoding of http%3A%2F%2Fsite.com%2Fye%20ye%20yee: "} { url_decode("http%3A%2F%2Fsite.com%2Fye%20ye%20ye") }</p>
+                <p> {"AES encryption: "} { aes_cbc_128_encrypt("Anna tu sens mauvais des fesses", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
+                <p> {"AES decryption of previous message: "} { aes_cbc_128_decrypt("2bddb633cad52eb64c05aa283c0ced7b846f8468266c09f801ba118976dd459a", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
+            </div>
+
+
+            <div>
+                <button onclick={Callback::from(move |_| navigator.push(&Route::Encode))}>{ "Encode" }</button>
+            </div>
 
         </main>
     }
 }
 
-#[derive(Debug)]
-pub struct RustError {
-    pub message: String,
+#[function_component(Encode)]
+fn encode() -> Html {
+    let navigator = use_navigator().unwrap();
+
+    html! {
+        <main>
+        <div>
+            <h1>{ "Encode" }</h1>
+            <div>
+                <button onclick={Callback::from(move |_| navigator.push(&Route::Base64))}>{ "With Base 64" }</button>
+            </div>
+            <div>
+                <button>{ "With URL encoding" }</button>
+            </div>
+        </div>
+        </main>
+    }
 }
 
-#[function_component]
-fn Hash(props: &Props) -> Html {
-    html! { <>{"Am I loading? - "}{props.is_loading.clone()}</> }
+#[function_component(Base64)]
+fn base64() -> Html {
+
+    html! {
+        <main>
+            <div>
+                <h1>{ "With Base 64" }</h1>
+            </div>
+        </main>
+    }
 }
 
 pub fn base64_encode(input: &str) -> String {
@@ -58,10 +117,9 @@ pub fn base64_decode(input: &str) -> String {
             Ok(string_result) => return string_result,
             Err(_) => return "Failed to turn bytes into UTF-8 string".to_string(),
         },
-        Err(_) =>  return "Failed to decode base 64 string".to_string(),
+        Err(_) => return "Failed to decode base 64 string".to_string(),
     }
 }
-
 
 pub fn url_encode(input: &str) -> String {
     return encode(input);
@@ -70,12 +128,11 @@ pub fn url_encode(input: &str) -> String {
 pub fn url_decode(input: &str) -> String {
     match decode(input) {
         Ok(string_result) => string_result,
-        Err(_) => return "Failed to decode encoded URL".to_string()
+        Err(_) => return "Failed to decode encoded URL".to_string(),
     }
 }
 
 pub fn aes_cbc_128_encrypt(plaintext: &str, key: &str, iv: &str) -> String {
-    
     // Get plaintext as bytes
     let plaintext = plaintext.as_bytes();
 
@@ -118,7 +175,7 @@ pub fn aes_cbc_128_encrypt(plaintext: &str, key: &str, iv: &str) -> String {
         .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext_len)
     {
         Ok(bytes_result) => return hex::encode(&bytes_result),
-        Err(_) =>  {return "Failed to perform AES encryption".to_string() }
+        Err(_) => return "Failed to perform AES encryption".to_string(),
     }
 }
 
@@ -129,9 +186,7 @@ pub fn aes_cbc_128_decrypt(ciphertext: &str, key: &str, iv: &str) -> String {
         Ok(bytes_result) => {
             ciphertext_bytes = bytes_result;
         }
-        Err(_) => {
-            return "The ciphertext is not an hexadecimal string".to_string()
-        }
+        Err(_) => return "The ciphertext is not an hexadecimal string".to_string(),
     }
 
     // Get key as bytes
@@ -143,9 +198,7 @@ pub fn aes_cbc_128_decrypt(ciphertext: &str, key: &str, iv: &str) -> String {
             }
             key_bytes.copy_from_slice(&bytes_result)
         }
-        Err(_) => {
-            return "The key is not an hexadecimal string".to_string()
-        }
+        Err(_) => return "The key is not an hexadecimal string".to_string(),
     }
 
     // Get IV as bytes
@@ -157,9 +210,7 @@ pub fn aes_cbc_128_decrypt(ciphertext: &str, key: &str, iv: &str) -> String {
             }
             iv_bytes.copy_from_slice(&bytes_result)
         }
-        Err(_) => {
-            return "The IV is not an hexadecimal string".to_string()
-        }
+        Err(_) => return "The IV is not an hexadecimal string".to_string(),
     }
 
     // Decrypt
@@ -169,9 +220,9 @@ pub fn aes_cbc_128_decrypt(ciphertext: &str, key: &str, iv: &str) -> String {
     {
         Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
             Ok(string_result) => string_result.to_string(),
-            Err(_) => "Failed to perform AES decryption".to_string()
+            Err(_) => "Failed to perform AES decryption".to_string(),
         },
-        Err(_) => "Failed to perform AES decryption".to_string()
+        Err(_) => "Failed to perform AES decryption".to_string(),
     }
 }
 

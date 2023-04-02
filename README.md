@@ -72,3 +72,7 @@ If you don't want to have your app dual licensed, just remove one (or both) of t
 There are two empty spaces in the MIT license you need to fill out: `` and `Damien Dub <damien.dub@gmail.com>`.
 
 [trunk]: https://github.com/thedodd/trunk
+
+
+### Notes
+
