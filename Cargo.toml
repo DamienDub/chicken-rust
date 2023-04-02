@@ -13,9 +13,13 @@ categories = ["gui", "wasm", "web-programming"]
 [dependencies]
 yew = { version="0.20", features=["csr"] }
 yew-router = "0.17"
+wasm-bindgen = "0.2.84"
+web-sys = "0.3.61"
+gloo-console = "0.2.3"
 sha1 = "0.10.1"
 hex = "0.4.3"
 base64 = "0.21.0"
 urlencoding = "1.0.1"
 aes = "0.8.2"
 cbc = "0.1.2"
+log = "0.4.17"

@@ -1,5 +1,9 @@
+// use gloo_console::log;
 use yew::prelude::*;
 use yew_router::prelude::*;
+
+use wasm_bindgen::{JsCast};
+use web_sys::HtmlTextAreaElement;
 
 use base64::{engine::general_purpose, Engine as _};
 use hex;
@@ -35,7 +39,7 @@ fn switch(routes: Route) -> Html {
         Route::Base64 => html! {
             <Base64 />
         },
-        Route::NotFound => html! { <h1>{ "404" }</h1> },
+        Route::NotFound => html! { <main><h1>{ "You got lost ?" }</h1></main> },
     }
 }
 
@@ -58,19 +62,27 @@ pub fn home() -> Html {
             <span class="subtitle">{ "Fast. Secure. Open source" }</span>
 
 
-            <div>
-                <p> {"Base 64 encoding of test: "} { base64_encode("test") }</p>
-                <p> {"Base 64 decoding of dGVzdA: "} { base64_decode("dGVzdA") }</p>
-                <p> {"URL encoding of http://site.com/ye ye ye: "} { url_encode("http://site.com/ye ye ye") }</p>
-                <p> {"URL decoding of http%3A%2F%2Fsite.com%2Fye%20ye%20yee: "} { url_decode("http%3A%2F%2Fsite.com%2Fye%20ye%20ye") }</p>
-                <p> {"AES encryption: "} { aes_cbc_128_encrypt("Anna tu sens mauvais des fesses", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
-                <p> {"AES decryption of previous message: "} { aes_cbc_128_decrypt("2bddb633cad52eb64c05aa283c0ced7b846f8468266c09f801ba118976dd459a", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
-            </div>
+            <br /><br />
+
+            // <div>
+            //     <p> {"Base 64 encoding of test: "} { base64_encode("test") }</p>
+            //     <p> {"Base 64 decoding of dGVzdA: "} { base64_decode("dGVzdA") }</p>
+            //     <p> {"URL encoding of http://site.com/ye ye ye: "} { url_encode("http://site.com/ye ye ye") }</p>
+            //     <p> {"URL decoding of http%3A%2F%2Fsite.com%2Fye%20ye%20yee: "} { url_decode("http%3A%2F%2Fsite.com%2Fye%20ye%20ye") }</p>
+            //     <p> {"AES encryption: "} { aes_cbc_128_encrypt("Anna tu sens mauvais des fesses", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
+            //     <p> {"AES decryption of previous message: "} { aes_cbc_128_decrypt("2bddb633cad52eb64c05aa283c0ced7b846f8468266c09f801ba118976dd459a", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
+            // </div>
 
 
+            <span class="subtitle">{ "What would you like to do ?" }</span>
+
             <div>
-                <button onclick={Callback::from(move |_| navigator.push(&Route::Encode))}>{ "Encode" }</button>
+                <button onclick={Callback::from(move |_| navigator.push(&Route::Encode))}>{ "I want to encode" }</button>
             </div>
+
+            <div>
+            <button>{ "I want to decode" }</button>
+        </div>
 
         </main>
     }
@@ -83,12 +95,12 @@ fn encode() -> Html {
     html! {
         <main>
         <div>
-            <h1>{ "Encode" }</h1>
+            <h1>{ "Encode with" }</h1>
             <div>
-                <button onclick={Callback::from(move |_| navigator.push(&Route::Base64))}>{ "With Base 64" }</button>
+                <button onclick={Callback::from(move |_| navigator.push(&Route::Base64))}>{ "Base 64" }</button>
             </div>
             <div>
-                <button>{ "With URL encoding" }</button>
+                <button>{ "URL encoding" }</button>
             </div>
         </div>
         </main>
@@ -98,10 +110,38 @@ fn encode() -> Html {
 #[function_component(Base64)]
 fn base64() -> Html {
 
+
+    let onclick = Callback::from(move |_: MouseEvent| {
+
+        let window = web_sys::window().unwrap();
+        let document = window.document().unwrap();
+        
+        let ti_element = document.get_element_by_id("ti").unwrap();
+        let ti_textarea = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let ti_textarea_content = ti_textarea.value();
+
+        let to_element = document.get_element_by_id("to").unwrap();
+        let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+
+        to_textarea.set_value(&base64_encode(ti_textarea_content.as_str()));
+    });
+
     html! {
         <main>
             <div>
-                <h1>{ "With Base 64" }</h1>
+                <h1>{ "Please enter some text" }</h1>
+
+                <div>
+                    <textarea id="ti" />
+                </div>
+
+                <div>
+                    <button onclick={onclick}>{ "Encode" }</button>
+                </div>
+
+                <div>
+                    <textarea id="to" />
+                </div>
             </div>
         </main>
     }
