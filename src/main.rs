@@ -1,4 +1,7 @@
 mod app;
+mod pages;
+mod utils;
+
 use app::App;
 
 fn main() {
