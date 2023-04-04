@@ -5,35 +5,68 @@ use crate::utils::route::Route;
 
 #[function_component(Home)]
 pub fn home() -> Html {
-    let navigator = use_navigator().unwrap();
+    let navigator1 = use_navigator().unwrap();
+    let to_encode = Callback::from(move |_: MouseEvent| {
+        navigator1.push(&Route::Encode);
+    });
+
+    let navigator2 = use_navigator().unwrap();
+    let to_decode = Callback::from(move |_: MouseEvent| {
+        navigator2.push(&Route::Decode);
+    });
+
+    let navigator3 = use_navigator().unwrap();
+    let to_generate = Callback::from(move |_: MouseEvent| {
+        navigator3.push(&Route::Decode);
+    });
+
+    let navigator4 = use_navigator().unwrap();
+    let to_hash = Callback::from(move |_: MouseEvent| {
+        navigator4.push(&Route::Decode);
+    });
+
+    let navigator5 = use_navigator().unwrap();
+    let to_encrypt = Callback::from(move |_: MouseEvent| {
+        navigator5.push(&Route::Decode);
+    });
+
+    let navigator5 = use_navigator().unwrap();
+    let to_decrypt = Callback::from(move |_: MouseEvent| {
+        navigator5.push(&Route::Decode);
+    });
 
     html! {
         <main>
             <h1>{ "Welcome to Chicken Rust" }</h1>
-            <span class="subtitle">{ "Fast. Secure. Open source" }</span>
-
+            <span class="subtitle">{ "Fast. Confidential. Open source" }</span>
 
             <br /><br />
-
-            // <div>
-            //     <p> {"Base 64 encoding of test: "} { base64_encode("test") }</p>
-            //     <p> {"Base 64 decoding of dGVzdA: "} { base64_decode("dGVzdA") }</p>
-            //     <p> {"URL encoding of http://site.com/ye ye ye: "} { url_encode("http://site.com/ye ye ye") }</p>
-            //     <p> {"URL decoding of http%3A%2F%2Fsite.com%2Fye%20ye%20yee: "} { url_decode("http%3A%2F%2Fsite.com%2Fye%20ye%20ye") }</p>
-            //     <p> {"AES encryption: "} { aes_cbc_128_encrypt("Anna tu sens mauvais des fesses", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
-            //     <p> {"AES decryption of previous message: "} { aes_cbc_128_decrypt("2bddb633cad52eb64c05aa283c0ced7b846f8468266c09f801ba118976dd459a", "00112233445566778899AABBCCDDEEFF", "11111111111111111111111111111111") }</p>
-            // </div>
-
 
             <span class="subtitle">{ "What would you like to do ?" }</span>
 
             <div>
-                <button onclick={Callback::from(move |_| navigator.push(&Route::Encode))}>{ "I want to encode" }</button>
+                <button onclick={to_encode}>{ "I want to encode" }</button>
             </div>
 
             <div>
-            <button>{ "I want to decode" }</button>
-        </div>
+                <button onclick={to_decode}>{ "I want to decode" }</button>
+            </div>
+
+            <div>
+                <button onclick={to_generate}>{ "I want to generate" }</button>
+            </div>
+
+            <div>
+                <button onclick={to_hash}>{ "I want to hash" }</button>
+            </div>
+
+            <div>
+                <button onclick={to_encrypt}>{ "I want to encrypt" }</button>
+            </div>
+
+            <div>
+                <button onclick={to_decrypt}>{ "I want to decrypt" }</button>
+            </div>
 
         </main>
     }
