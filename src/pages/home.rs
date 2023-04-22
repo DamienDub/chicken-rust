@@ -17,12 +17,12 @@ pub fn home() -> Html {
 
     let navigator3 = use_navigator().unwrap();
     let to_generate = Callback::from(move |_: MouseEvent| {
-        navigator3.push(&Route::Decode);
+        navigator3.push(&Route::Generate);
     });
 
     let navigator4 = use_navigator().unwrap();
     let to_hash = Callback::from(move |_: MouseEvent| {
-        navigator4.push(&Route::Decode);
+        navigator4.push(&Route::Hash);
     });
 
     let navigator5 = use_navigator().unwrap();

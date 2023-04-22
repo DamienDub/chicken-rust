@@ -12,7 +12,7 @@ pub fn encrypt() -> Html {
         <main>
             <h1>{ "Encrypt with..." }</h1>
             <div>
-                 <button onclick={}>{ "AES-256" }</button>
+                //  <button onclick={}>{ "AES-256" }</button>
             </div>
         </main>
     }

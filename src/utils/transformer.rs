@@ -1,6 +1,7 @@
 use base64::{engine::general_purpose, Engine as _};
 use hex;
 use urlencoding::{decode, encode};
+use sha2::{Sha256, Digest};
 
 // AES
 use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
@@ -28,6 +29,17 @@ pub fn url_decode(input: &str) -> String {
         Ok(string_result) => string_result,
         Err(_) => return "Failed to decode encoded URL".to_string(),
     }
+}
+
+pub fn hash_sha1(){
+
+}
+
+pub fn sha256_hash(input: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(input);
+    let result = hasher.finalize();
+    return hex::encode(result);
 }
 
 pub fn aes_cbc_128_encrypt(plaintext: &str, key: &str, iv: &str) -> String {

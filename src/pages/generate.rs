@@ -10,9 +10,9 @@ pub fn generate() -> Html {
 
     html! {
         <main>
-            <h1>{ "What would you like to generate" }</h1>
+            <h1>{ "What would you like to generate ?" }</h1>
             <div>
-                 <button onclick={}>{ "A random string" }</button>
+                //  <button onclick={}>{ "A random string" }</button>
             </div>
         </main>
     }
