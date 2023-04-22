@@ -11,8 +11,8 @@ pub enum Route {
     #[at("/encode/base64")]
     EncodeBase64,
 
-    // #[at("/encode/url")]
-    // EncodeUrl,
+    #[at("/encode/url")]
+    EncodeUrl,
 
     #[at("/decode")]
     Decode,
@@ -20,8 +20,8 @@ pub enum Route {
     #[at("/decode/base64")]
     DecodeBase64,
 
-    // #[at("/decode/url")]
-    // DecodeUrl,
+    #[at("/decode/url")]
+    DecodeUrl,
 
     #[at("/generate")]
     Generate,
