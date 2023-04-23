@@ -29,6 +29,9 @@ pub enum Route {
     #[at("/hash")]
     Hash,
 
+    #[at("/hash/sha1")]
+    HashSha1,
+
     #[at("/hash/sha256")]
     HashSha256,
 

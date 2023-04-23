@@ -20,6 +20,7 @@ fn switch(routes: Route) -> Html {
         Route::DecodeUrl => html! { <DecodeUrl /> },
         Route::Generate => html! { <Generate /> },
         Route::Hash => html! {<Hash />},
+        Route::HashSha1 => html! {<HashSha1 />},
         Route::HashSha256 => html! {<HashSha256 />},
         Route::Encrypt => html! {},
         Route::Decrypt => html! {},

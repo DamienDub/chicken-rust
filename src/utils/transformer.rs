@@ -1,7 +1,8 @@
 use base64::{engine::general_purpose, Engine as _};
 use hex;
+use sha1::{Digest as Sha1Digest, Sha1};
+use sha2::{Digest as Sha256Digest, Sha256};
 use urlencoding::{decode, encode};
-use sha2::{Sha256, Digest};
 
 // AES
 use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
@@ -31,8 +32,11 @@ pub fn url_decode(input: &str) -> String {
     }
 }
 
-pub fn hash_sha1(){
-
+pub fn sha1_hash(input: &str) -> String {
+    let mut hasher = Sha1::new();
+    hasher.update(input);
+    let result = hasher.finalize();
+    return hex::encode(result);
 }
 
 pub fn sha256_hash(input: &str) -> String {
