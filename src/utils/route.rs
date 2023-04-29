@@ -26,6 +26,9 @@ pub enum Route {
     #[at("/generate")]
     Generate,
 
+    #[at("/generate/randomString")]
+    GenerateRandomString,
+
     #[at("/hash")]
     Hash,
 

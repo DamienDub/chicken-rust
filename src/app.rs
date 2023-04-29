@@ -19,6 +19,7 @@ fn switch(routes: Route) -> Html {
         Route::DecodeBase64 => html! { <DecodeBase64 /> },
         Route::DecodeUrl => html! { <DecodeUrl /> },
         Route::Generate => html! { <Generate /> },
+        Route::GenerateRandomString => html! { <GenerateRandomString /> },
         Route::Hash => html! {<Hash />},
         Route::HashSha1 => html! {<HashSha1 />},
         Route::HashSha256 => html! {<HashSha256 />},
