@@ -4,6 +4,7 @@ use yew_router::prelude::*;
 
 use crate::pages::encode::*;
 use crate::pages::encrypt::*;
+use crate::pages::decrypt::*;
 use crate::pages::generate::*;
 use crate::pages::hash::*;
 use crate::pages::home::*;
@@ -23,8 +24,10 @@ fn switch(routes: Route) -> Html {
         Route::Hash => html! {<Hash />},
         Route::HashSha1 => html! {<HashSha1 />},
         Route::HashSha256 => html! {<HashSha256 />},
-        Route::Encrypt => html! {},
-        Route::Decrypt => html! {},
+        Route::Encrypt => html! {< Encrypt />},
+        Route::EncryptAes => html! {<EncryptAes />},
+        Route::Decrypt => html! {< Decrypt />},
+        Route::DecryptAes => html! {<DecryptAes />},
         Route::NotFound => html! { <main><h1>{ "You got lost ?" }</h1></main> },
     }
 }

@@ -41,8 +41,14 @@ pub enum Route {
     #[at("/encrypt")]
     Encrypt,
 
+    #[at("/encrypt/aes")]
+    EncryptAes,
+
     #[at("/decrypt")]
     Decrypt,
+
+    #[at("/decrypt/aes")]
+    DecryptAes,
 
 
     #[not_found]

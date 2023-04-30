@@ -8,6 +8,8 @@ use urlencoding::{decode, encode};
 // AES
 use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 
+use gloo_console::log;
+
 pub fn base64_encode(input: &str) -> String {
     return general_purpose::STANDARD_NO_PAD.encode(input);
 }
@@ -77,18 +79,36 @@ pub fn random_string_generate(
         .collect()
 }
 
-pub fn aes_cbc_128_encrypt(plaintext: &str, key: &str, iv: &str) -> String {
-    // Get plaintext as bytes
-    let plaintext = plaintext.as_bytes();
+pub fn aes_cbc_encrypt(
+    key_size: usize,
+    key: &str,
+    iv: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> String {
+    // Get key size in bytes
+    let key_size_bytes = match key_size {
+        128 => 16,
+        192 => 24,
+        256 => 32,
+        _ => return "The key size must be 128, 192, or 256".to_string(),
+    };
 
     // Get key as bytes
-    let mut key_bytes = [0x42; 16];
+    let mut key_bytes_128 = [0x42; 16];
+    let mut key_bytes_192 = [0x42; 24];
+    let mut key_bytes_256 = [0x42; 32];
     match hex::decode(key) {
         Ok(bytes_result) => {
-            if bytes_result.len() != 16 {
-                return "The key is not 16 bytes length".to_string();
+            if key_size_bytes != bytes_result.len() {
+                return "The key does not have a correct length".to_string();
             }
-            key_bytes.copy_from_slice(&bytes_result)
+            match key_size {
+                128 => key_bytes_128.copy_from_slice(&bytes_result),
+                192 => key_bytes_192.copy_from_slice(&bytes_result),
+                256 => key_bytes_256.copy_from_slice(&bytes_result),
+                _ => return "The key size must be 128, 192, or 256".to_string(),
+            };
         }
         Err(_) => {
             return "The key is not an hexadecimal string".to_string();
@@ -96,13 +116,13 @@ pub fn aes_cbc_128_encrypt(plaintext: &str, key: &str, iv: &str) -> String {
     }
 
     // Get IV as bytes
-    let mut iv_bytes = [0x24; 16];
+    let mut iv_bytes = [0x42; 16];
     match hex::decode(iv) {
-        Ok(bytes_result) => {
-            if bytes_result.len() != 16 {
+        Ok(result) => {
+            if result.len() != 16 {
                 return "The IV is not 16 bytes length".to_string();
             }
-            iv_bytes.copy_from_slice(&bytes_result)
+            iv_bytes.copy_from_slice(&result)
         }
         Err(_) => {
             return "The IV is not an hexadecimal string".to_string();
@@ -112,62 +132,162 @@ pub fn aes_cbc_128_encrypt(plaintext: &str, key: &str, iv: &str) -> String {
     // Make buffer with proper length
     let plaintext_len = plaintext.len();
     let mut buf = vec![0u8; closest_upper_multiple_(plaintext_len, 128)];
-    buf[..plaintext_len].copy_from_slice(&plaintext);
+    buf[..plaintext_len].copy_from_slice(&plaintext.as_bytes());
 
     // Encrypt
-    type Aes128CbcEnc = cbc::Encryptor<aes::Aes128>;
-    match Aes128CbcEnc::new(&key_bytes.into(), &iv_bytes.into())
-        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext_len)
-    {
-        Ok(bytes_result) => return hex::encode(&bytes_result),
-        Err(_) => return "Failed to perform AES encryption".to_string(),
-    }
+    match key_size {
+        128 => {
+            type Aes128CbcEnc = cbc::Encryptor<aes::Aes128>;
+            match Aes128CbcEnc::new(&key_bytes_128.into(), &iv_bytes.into())
+                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext_len)
+            {
+                Ok(result) => {
+                    if hex_output {
+                        return hex::encode(&result);
+                    } else {
+                        return general_purpose::STANDARD.encode(&result);
+                    }
+                }
+                Err(_) => return "Failed to perform AES-128 encryption".to_string(),
+            }
+        }
+        192 => {
+            type Aes192CbcEnc = cbc::Encryptor<aes::Aes192>;
+            match Aes192CbcEnc::new(&key_bytes_192.into(), &iv_bytes.into())
+                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext_len)
+            {
+                Ok(result) => {
+                    if hex_output {
+                        return hex::encode(&result);
+                    } else {
+                        return general_purpose::STANDARD.encode(&result);
+                    }
+                }
+                Err(_) => return "Failed to perform AES-192 encryption".to_string(),
+            }
+        }
+        256 => {
+            type Aes256CbcEnc = cbc::Encryptor<aes::Aes256>;
+            match Aes256CbcEnc::new(&key_bytes_256.into(), &iv_bytes.into())
+                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext_len)
+            {
+                Ok(result) => {
+                    if hex_output {
+                        return hex::encode(&result);
+                    } else {
+                        return general_purpose::STANDARD.encode(&result);
+                    }
+                }
+                Err(_) => return "Failed to perform AES-256 encryption".to_string(),
+            }
+        }
+        _ => return "The key size must be 128, 192, or 256".to_string(),
+    };
 }
 
-pub fn aes_cbc_128_decrypt(ciphertext: &str, key: &str, iv: &str) -> String {
-    // Get ciphertext as bytes
-    let mut ciphertext_bytes: Vec<u8>;
-    match hex::decode(ciphertext) {
-        Ok(bytes_result) => {
-            ciphertext_bytes = bytes_result;
-        }
-        Err(_) => return "The ciphertext is not an hexadecimal string".to_string(),
-    }
+pub fn aes_cbc_decrypt(
+    key_size: usize,
+    key: &str,
+    iv: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> String {
+    // Get key size in bytes
+    let key_size_bytes = match key_size {
+        128 => 16,
+        192 => 24,
+        256 => 32,
+        _ => return "The key size must be 128, 192, or 256".to_string(),
+    };
 
     // Get key as bytes
-    let mut key_bytes = [0x42; 16];
+    let mut key_bytes_128 = [0x42; 16];
+    let mut key_bytes_192 = [0x42; 24];
+    let mut key_bytes_256 = [0x42; 32];
     match hex::decode(key) {
         Ok(bytes_result) => {
-            if bytes_result.len() != 16 {
-                return "The key is not 16 bytes length".to_string();
+            if key_size_bytes != bytes_result.len() {
+                return "The key does not have a correct length".to_string();
             }
-            key_bytes.copy_from_slice(&bytes_result)
+            match key_size {
+                128 => key_bytes_128.copy_from_slice(&bytes_result),
+                192 => key_bytes_192.copy_from_slice(&bytes_result),
+                256 => key_bytes_256.copy_from_slice(&bytes_result),
+                _ => return "The key size must be 128, 192, or 256".to_string(),
+            };
         }
-        Err(_) => return "The key is not an hexadecimal string".to_string(),
+        Err(_) => {
+            return "The key is not an hexadecimal string".to_string();
+        }
     }
 
     // Get IV as bytes
-    let mut iv_bytes = [0x24; 16];
+    let mut iv_bytes = [0x42; 16];
     match hex::decode(iv) {
-        Ok(bytes_result) => {
-            if bytes_result.len() != 16 {
+        Ok(result) => {
+            if result.len() != 16 {
                 return "The IV is not 16 bytes length".to_string();
             }
-            iv_bytes.copy_from_slice(&bytes_result)
+            iv_bytes.copy_from_slice(&result)
         }
-        Err(_) => return "The IV is not an hexadecimal string".to_string(),
+        Err(_) => {
+            return "The IV is not an hexadecimal string".to_string();
+        }
+    }
+
+    // Get ciphertext as bytes
+    let mut ciphertext_bytes: Vec<u8>;
+    if hex_input {
+        match hex::decode(ciphertext) {
+            Ok(bytes_result) => ciphertext_bytes = bytes_result,
+            Err(_) => return "The ciphertext is not an hexadecimal string".to_string(),
+        }
+    } else {
+        match general_purpose::STANDARD.decode(ciphertext) {
+            Ok(bytes_result) => ciphertext_bytes = bytes_result,
+            Err(_) => return "The ciphertext is not a base 64 string".to_string(),
+        }
     }
 
     // Decrypt
-    type Aes128CbcDec = cbc::Decryptor<aes::Aes128>;
-    match Aes128CbcDec::new(&key_bytes.into(), &iv_bytes.into())
-        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-    {
-        Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
-            Ok(string_result) => string_result.to_string(),
-            Err(_) => "Failed to perform AES decryption".to_string(),
-        },
-        Err(_) => "Failed to perform AES decryption".to_string(),
+    match key_size {
+        128 => {
+            type Aes128CbcDec = cbc::Decryptor<aes::Aes128>;
+            match Aes128CbcDec::new(&key_bytes_128.into(), &iv_bytes.into())
+                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
+            {
+                Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
+                    Ok(string_result) => string_result.to_string(),
+                    Err(_) => "Failed to perform AES-128 decryption".to_string(),
+                },
+                Err(_) => "Failed to perform AES-128 decryption".to_string(),
+            }
+        }
+        192 => {
+            type Aes192CbcDec = cbc::Decryptor<aes::Aes192>;
+            match Aes192CbcDec::new(&key_bytes_192.into(), &iv_bytes.into())
+                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
+            {
+                Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
+                    Ok(string_result) => string_result.to_string(),
+                    Err(_) => "Failed to perform AES-192 decryption".to_string(),
+                },
+                Err(_) => "Failed to perform AES-192 decryption".to_string(),
+            }
+        }
+        256 => {
+            type Aes256CbcDec = cbc::Decryptor<aes::Aes256>;
+            match Aes256CbcDec::new(&key_bytes_256.into(), &iv_bytes.into())
+                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
+            {
+                Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
+                    Ok(string_result) => string_result.to_string(),
+                    Err(_) => "Failed to perform AES-256 decryption".to_string(),
+                },
+                Err(_) => "Failed to perform AES-256 decryption".to_string(),
+            }
+        }
+        _ => return "The key size must be 128, 192, or 256".to_string(),
     }
 }
 

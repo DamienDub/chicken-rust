@@ -13,15 +13,15 @@ use crate::utils::transformer::*;
 use gloo_console::log;
 
 
-#[function_component(Encrypt)]
+#[function_component(Decrypt)]
 pub fn encrypt() -> Html {
 
     let navigator1 = use_navigator().unwrap();
-    let to_aes = Callback::from(move |_| navigator1.push(&Route::EncryptAes));
+    let to_aes = Callback::from(move |_| navigator1.push(&Route::DecryptAes));
 
     html! {
         <main>
-            <h1>{ "Encrypt with..." }</h1>
+            <h1>{ "Decrypt with..." }</h1>
             <div>
                 <button onclick={to_aes}>{ "AES" }</button>
             </div>
@@ -29,12 +29,11 @@ pub fn encrypt() -> Html {
     }
 }
 
-#[function_component(EncryptAes)]
-pub fn encrypt_aes() -> Html {
+#[function_component(DecryptAes)]
+pub fn decrypt_aes() -> Html {
 
     let onclick = Callback::from(move |_: MouseEvent| {
                 
-        
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
@@ -50,9 +49,9 @@ pub fn encrypt_aes() -> Html {
         let key_input = key_element.dyn_into::<HtmlInputElement>().unwrap();
         let key = key_input.value();
 
-        let output_element = document.get_element_by_id("output").unwrap();
-        let output_input = output_element.dyn_into::<HtmlSelectElement>().unwrap();
-        let output = output_input.value();
+        let input_element = document.get_element_by_id("input").unwrap();
+        let input_input = input_element.dyn_into::<HtmlSelectElement>().unwrap();
+        let input = input_input.value();
 
         let ti_element = document.get_element_by_id("ti").unwrap();
         let ti_input = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
@@ -60,7 +59,7 @@ pub fn encrypt_aes() -> Html {
 
         let to_element = document.get_element_by_id("to").unwrap();
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
-        to_textarea.set_value(aes_cbc_encrypt(128, key.as_str(), iv.as_str(), ti.as_str(), output == "hexadecimal").as_str());
+        to_textarea.set_value(aes_cbc_decrypt(128, key.as_str(), iv.as_str(), ti.as_str(), input == "hexadecimal").as_str());
       
     });
 
@@ -97,9 +96,9 @@ pub fn encrypt_aes() -> Html {
                 <br />
 
                 <div>
-                    <label for="output">{ "Output" }</label>
+                    <label for="input">{ "Input" }</label>
                     <br />
-                    <select id="output">
+                    <select id="input">
                         <option value="base64" selected=true>{"Base 64"}</option>
                         <option value="hexadecimal">{"Hexadecimal"}</option>
                     </select>
@@ -108,7 +107,7 @@ pub fn encrypt_aes() -> Html {
                 <br />
 
                 <div>
-                    <label for="ti">{ "Text to encrypt" }</label>
+                    <label for="ti">{ "Text to decrypt" }</label>
                     <br />
                     <textarea id="ti" />
                 </div>
@@ -116,7 +115,7 @@ pub fn encrypt_aes() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Encrypt" }</button>
+                    <button onclick={onclick}>{ "Decrypt" }</button>
                 </div>
 
                 <br />

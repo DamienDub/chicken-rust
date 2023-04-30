@@ -27,12 +27,12 @@ pub fn home() -> Html {
 
     let navigator5 = use_navigator().unwrap();
     let to_encrypt = Callback::from(move |_: MouseEvent| {
-        navigator5.push(&Route::Decode);
+        navigator5.push(&Route::Encrypt);
     });
 
-    let navigator5 = use_navigator().unwrap();
+    let navigator6 = use_navigator().unwrap();
     let to_decrypt = Callback::from(move |_: MouseEvent| {
-        navigator5.push(&Route::Decode);
+        navigator6.push(&Route::Decrypt);
     });
 
     html! {
