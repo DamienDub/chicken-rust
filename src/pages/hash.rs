@@ -49,15 +49,19 @@ pub fn hash_sha1() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text" }</h1>
+                <h1>{ "Please enter some text to hash" }</h1>
 
                 <div>
                     <textarea id="ti" />
                 </div>
 
+                <br />
+
                 <div>
                     <button onclick={onclick}>{ "Hash" }</button>
                 </div>
+
+                <br />
 
                 <div>
                     <textarea id="to" />
@@ -87,15 +91,19 @@ pub fn hash_sha256() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text" }</h1>
+                <h1>{ "Please enter some text to hash" }</h1>
 
                 <div>
                     <textarea id="ti" />
                 </div>
 
+                <br />
+
                 <div>
                     <button onclick={onclick}>{ "Hash" }</button>
                 </div>
+
+                <br />
 
                 <div>
                     <textarea id="to" />

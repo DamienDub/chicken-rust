@@ -50,6 +50,8 @@ pub enum Route {
     #[at("/decrypt/aes")]
     DecryptAes,
 
+    #[at("/test")]
+    Test,
 
     #[not_found]
     #[at("/404")]

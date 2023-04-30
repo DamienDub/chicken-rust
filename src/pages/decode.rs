@@ -51,15 +51,19 @@ pub fn decode_base64() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text" }</h1>
+                <h1>{ "Please enter some Base 64 text" }</h1>
 
                 <div>
                     <textarea id="ti" />
                 </div>
 
+                <br />
+
                 <div>
                     <button onclick={onclick}>{ "Decode" }</button>
                 </div>
+
+                <br />
 
                 <div>
                     <textarea id="to" />
@@ -89,15 +93,19 @@ pub fn decode_url() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text" }</h1>
+                <h1>{ "Please enter an encoded URL" }</h1>
 
                 <div>
                     <textarea id="ti" />
                 </div>
 
+                <br />
+
                 <div>
                     <button onclick={onclick}>{ "Decode" }</button>
                 </div>
+
+                <br />
 
                 <div>
                     <textarea id="to" />

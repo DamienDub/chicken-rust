@@ -9,6 +9,7 @@ use crate::pages::decrypt::*;
 use crate::pages::generate::*;
 use crate::pages::hash::*;
 use crate::pages::home::*;
+use crate::pages::test::*;
 use crate::utils::route::Route;
 
 fn switch(routes: Route) -> Html {
@@ -29,6 +30,7 @@ fn switch(routes: Route) -> Html {
         Route::EncryptAes => html! {<EncryptAes />},
         Route::Decrypt => html! {< Decrypt />},
         Route::DecryptAes => html! {<DecryptAes />},
+        Route::Test => html! {<Test />},
         Route::NotFound => html! { <main><h1>{ "You got lost ?" }</h1></main> },
     }
 }

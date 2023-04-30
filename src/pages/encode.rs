@@ -57,9 +57,13 @@ pub fn encode_base64() -> Html {
                     <textarea id="ti" />
                 </div>
 
+                <br />
+
                 <div>
                     <button onclick={onclick}>{ "Encode" }</button>
                 </div>
+
+                <br />
 
                 <div>
                     <textarea id="to" />
@@ -89,15 +93,19 @@ pub fn encode_url() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text" }</h1>
+                <h1>{ "Please enter some URL" }</h1>
 
                 <div>
                     <textarea id="ti" />
                 </div>
 
+                <br />
+
                 <div>
                     <button onclick={onclick}>{ "Encode" }</button>
                 </div>
+
+                <br />
 
                 <div>
                     <textarea id="to" />

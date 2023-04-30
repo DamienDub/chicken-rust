@@ -5,4 +5,5 @@ pub mod decrypt;
 pub mod generate;
 pub mod hash;
 pub mod home;
+pub mod test;
 

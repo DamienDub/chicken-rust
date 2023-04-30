@@ -10,9 +10,6 @@ use crate::utils::route::Route;
 
 use crate::utils::transformer::*;
 
-use gloo_console::log;
-
-
 #[function_component(Encrypt)]
 pub fn encrypt() -> Html {
 
@@ -53,6 +50,7 @@ pub fn encrypt_aes() -> Html {
         let output_element = document.get_element_by_id("output").unwrap();
         let output_input = output_element.dyn_into::<HtmlSelectElement>().unwrap();
         let output = output_input.value();
+        let is_hex = output == "hexadecimal";
 
         let ti_element = document.get_element_by_id("ti").unwrap();
         let ti_input = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
@@ -60,8 +58,13 @@ pub fn encrypt_aes() -> Html {
 
         let to_element = document.get_element_by_id("to").unwrap();
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
-        to_textarea.set_value(aes_cbc_encrypt(128, key.as_str(), iv.as_str(), ti.as_str(), output == "hexadecimal").as_str());
-      
+
+        match mode.as_str() {
+            "cbc" => {to_textarea.set_value(aes_cbc_encrypt(128, key.as_str(), iv.as_str(), ti.as_str(), is_hex).as_str())}
+            "ecb" => {to_textarea.set_value(aes_ecb_encrypt(128, key.as_str(), ti.as_str(), is_hex).as_str())}
+            _ =>  {to_textarea.set_value("Wrong mode value") }
+        }
+
     });
 
     html! {
