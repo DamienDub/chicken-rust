@@ -8,32 +8,32 @@ use web_sys::HtmlTextAreaElement;
 
 use crate::utils::transformer::*;
 
-#[function_component(Encode)]
-pub fn encode() -> Html {
+#[function_component(Decode)]
+pub fn decode() -> Html {
 
     let navigator1 = use_navigator().unwrap();
-    let to_base64 = Callback::from(move |_| navigator1.push(&Route::EncodeBase64));
+    let to_base64 = Callback::from(move |_| navigator1.push(&Route::DecodeBase64));
 
     let navigator2 = use_navigator().unwrap();
-    let to_url = Callback::from(move |_| navigator2.push(&Route::EncodeUrl));
+    let to_url = Callback::from(move |_| navigator2.push(&Route::DecodeUrl));
 
     html! {
         <main>
         <div>
-            <h1>{ "Encode with" }</h1>
+            <h1>{ "Decode with" }</h1>
             <div>
                  <button onclick={to_base64}>{ "Base 64" }</button>
             </div>
             <div>
-                <button onclick={to_url}>{ "URL encoding" }</button>
+                <button onclick={to_url}>{ "URL decoding" }</button>
             </div>
         </div>
         </main>
     }
 }
 
-#[function_component(EncodeBase64)]
-pub fn encode_base64() -> Html {
+#[function_component(DecodeBase64)]
+pub fn decode_base64() -> Html {
     let onclick = Callback::from(move |_: MouseEvent| {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
@@ -45,7 +45,7 @@ pub fn encode_base64() -> Html {
         let to_element = document.get_element_by_id("to").unwrap();
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
 
-        to_textarea.set_value(&base64_encode(ti_textarea_content.as_str()));
+        to_textarea.set_value(&base64_decode(ti_textarea_content.as_str()));
     });
 
     html! {
@@ -58,7 +58,7 @@ pub fn encode_base64() -> Html {
                 </div>
 
                 <div>
-                    <button onclick={onclick}>{ "Encode" }</button>
+                    <button onclick={onclick}>{ "Decode" }</button>
                 </div>
 
                 <div>
@@ -70,8 +70,8 @@ pub fn encode_base64() -> Html {
 }
 
 
-#[function_component(EncodeUrl)]
-pub fn encode_url() -> Html {
+#[function_component(DecodeUrl)]
+pub fn decode_url() -> Html {
     let onclick = Callback::from(move |_: MouseEvent| {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
@@ -83,7 +83,7 @@ pub fn encode_url() -> Html {
         let to_element = document.get_element_by_id("to").unwrap();
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
 
-        to_textarea.set_value(&url_encode(ti_textarea_content.as_str()));
+        to_textarea.set_value(&url_decode(ti_textarea_content.as_str()));
     });
 
     html! {
@@ -96,7 +96,7 @@ pub fn encode_url() -> Html {
                 </div>
 
                 <div>
-                    <button onclick={onclick}>{ "Encode" }</button>
+                    <button onclick={onclick}>{ "Decode" }</button>
                 </div>
 
                 <div>

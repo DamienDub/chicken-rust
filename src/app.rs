@@ -3,6 +3,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::pages::encode::*;
+use crate::pages::decode::*;
 use crate::pages::encrypt::*;
 use crate::pages::decrypt::*;
 use crate::pages::generate::*;
