@@ -10,7 +10,6 @@ use crate::utils::transformer::*;
 
 #[function_component(Encode)]
 pub fn encode() -> Html {
-
     let navigator1 = use_navigator().unwrap();
     let to_base64 = Callback::from(move |_| navigator1.push(&Route::EncodeBase64));
 
@@ -72,7 +71,6 @@ pub fn encode_base64() -> Html {
         </main>
     }
 }
-
 
 #[function_component(EncodeUrl)]
 pub fn encode_url() -> Html {

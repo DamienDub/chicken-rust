@@ -10,7 +10,6 @@ use crate::utils::transformer::*;
 
 #[function_component(Hash)]
 pub fn hash() -> Html {
-
     let navigator1 = use_navigator().unwrap();
     let to_sha1 = Callback::from(move |_| navigator1.push(&Route::HashSha1));
 
@@ -71,7 +70,6 @@ pub fn hash_sha1() -> Html {
     }
 }
 
-
 #[function_component(HashSha256)]
 pub fn hash_sha256() -> Html {
     let onclick = Callback::from(move |_: MouseEvent| {
@@ -112,4 +110,3 @@ pub fn hash_sha256() -> Html {
         </main>
     }
 }
-

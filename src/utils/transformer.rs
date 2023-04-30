@@ -6,7 +6,7 @@ use sha2::{Digest as Sha256Digest, Sha256};
 use urlencoding::{decode, encode};
 
 // AES
-use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit, KeyInit};
+use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyInit, KeyIvInit};
 
 use gloo_console::log;
 
@@ -291,13 +291,7 @@ pub fn aes_cbc_decrypt(
     }
 }
 
-
-pub fn aes_ecb_encrypt(
-    key_size: usize,
-    key: &str,
-    plaintext: &str,
-    hex_output: bool,
-) -> String {
+pub fn aes_ecb_encrypt(key_size: usize, key: &str, plaintext: &str, hex_output: bool) -> String {
     // Get key size in bytes
     let key_size_bytes = match key_size {
         128 => 16,
@@ -383,14 +377,7 @@ pub fn aes_ecb_encrypt(
     };
 }
 
-
-pub fn aes_ecb_decrypt(
-    key_size: usize,
-    key: &str,
-    ciphertext: &str,
-    hex_input: bool,
-) -> String {
-
+pub fn aes_ecb_decrypt(key_size: usize, key: &str, ciphertext: &str, hex_input: bool) -> String {
     // Get key size in bytes
     let key_size_bytes = match key_size {
         128 => 16,
@@ -475,7 +462,6 @@ pub fn aes_ecb_decrypt(
         _ => return "The key size must be 128, 192, or 256".to_string(),
     }
 }
-
 
 fn closest_upper_multiple_(number: usize, multiple: usize) -> usize {
     let remainder = number % multiple;

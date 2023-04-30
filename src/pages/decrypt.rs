@@ -10,10 +10,8 @@ use crate::utils::route::Route;
 
 use crate::utils::transformer::*;
 
-
 #[function_component(Decrypt)]
 pub fn encrypt() -> Html {
-
     let navigator1 = use_navigator().unwrap();
     let to_aes = Callback::from(move |_| navigator1.push(&Route::DecryptAes));
 
@@ -29,9 +27,7 @@ pub fn encrypt() -> Html {
 
 #[function_component(DecryptAes)]
 pub fn decrypt_aes() -> Html {
-
     let onclick = Callback::from(move |_: MouseEvent| {
-                
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
@@ -60,10 +56,13 @@ pub fn decrypt_aes() -> Html {
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
 
         match mode.as_str() {
-            "cbc" => {to_textarea.set_value(aes_cbc_decrypt(128, key.as_str(), iv.as_str(), ti.as_str(), is_hex).as_str())}
-            "ecb" => {to_textarea.set_value(aes_ecb_decrypt(128, key.as_str(), ti.as_str(), is_hex).as_str())}
-            _ =>  {to_textarea.set_value("Wrong mode value") }
-        }      
+            "cbc" => to_textarea.set_value(
+                aes_cbc_decrypt(128, key.as_str(), iv.as_str(), ti.as_str(), is_hex).as_str(),
+            ),
+            "ecb" => to_textarea
+                .set_value(aes_ecb_decrypt(128, key.as_str(), ti.as_str(), is_hex).as_str()),
+            _ => to_textarea.set_value("Wrong mode value"),
+        }
     });
 
     html! {
