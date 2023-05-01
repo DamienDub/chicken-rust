@@ -6,7 +6,7 @@ use web_sys::HtmlTextAreaElement;
 
 use crate::utils::route::Route;
 
-use crate::utils::transformer::*;
+use crate::utils::hasher::*;
 
 #[function_component(Hash)]
 pub fn hash() -> Html {

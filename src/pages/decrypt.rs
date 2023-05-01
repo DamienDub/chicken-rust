@@ -8,7 +8,7 @@ use web_sys::HtmlTextAreaElement;
 
 use crate::utils::route::Route;
 
-use crate::utils::transformer::*;
+use crate::utils::crypter::*;
 
 #[function_component(Decrypt)]
 pub fn encrypt() -> Html {

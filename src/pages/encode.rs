@@ -6,7 +6,7 @@ use crate::utils::route::Route;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlTextAreaElement;
 
-use crate::utils::transformer::*;
+use crate::utils::coder::*;
 
 #[function_component(Encode)]
 pub fn encode() -> Html {

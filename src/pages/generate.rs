@@ -9,7 +9,7 @@ use web_sys::HtmlTextAreaElement;
 
 use gloo_console::log;
 
-use crate::utils::transformer::*;
+use crate::utils::generator::*;
 
 #[function_component(Generate)]
 pub fn generate() -> Html {

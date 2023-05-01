@@ -74,13 +74,6 @@ There are two empty spaces in the MIT license you need to fill out: `` and `Dami
 [trunk]: https://github.com/thedodd/trunk
 
 
-### Opens SSL
-
-AES CBC 128 encryption
-```bash
-echo -n 'test' | openssl enc -aes-128-cbc --base64 -K '00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
-```
-
 ### Notes
 
 
