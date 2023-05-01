@@ -56,11 +56,14 @@ pub fn decrypt_aes() -> Html {
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
 
         match mode.as_str() {
-            "cbc" => to_textarea.set_value(
-                aes_cbc_decrypt(128, key.as_str(), iv.as_str(), ti.as_str(), is_hex).as_str(),
-            ),
-            "ecb" => to_textarea
-                .set_value(aes_ecb_decrypt(128, key.as_str(), ti.as_str(), is_hex).as_str()),
+            "cbc" => match aes_cbc_decrypt(128, key.as_str(), iv.as_str(), ti.as_str(), is_hex) {
+                Ok(result) => to_textarea.set_value(result.as_str()),
+                Err(error) => to_textarea.set_value(error),
+            },
+            "ecb" => match aes_ecb_decrypt(128, key.as_str(), ti.as_str(), is_hex) {
+                Ok(result) => to_textarea.set_value(result.as_str()),
+                Err(error) => to_textarea.set_value(error),
+            },
             _ => to_textarea.set_value("Wrong mode value"),
         }
     });

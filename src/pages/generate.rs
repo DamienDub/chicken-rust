@@ -54,9 +54,11 @@ pub fn generate_random_string() -> Html {
 
         let to_element = document.get_element_by_id("to").unwrap();
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
-        to_textarea.set_value(
-            random_string_generate(length, with_lowercase, with_uppercase, with_numbers).as_str(),
-        );
+
+        match random_string_generate(length, with_lowercase, with_uppercase, with_numbers) {
+            Ok(result) => to_textarea.set_value(result.as_str()),
+            Err(error) => to_textarea.set_value(error),
+        }
     });
 
     html! {

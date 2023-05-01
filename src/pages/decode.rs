@@ -44,7 +44,10 @@ pub fn decode_base64() -> Html {
         let to_element = document.get_element_by_id("to").unwrap();
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
 
-        to_textarea.set_value(&base64_decode(ti_textarea_content.as_str()));
+        match base64_decode(ti_textarea_content.as_str()) {
+            Ok(result) => to_textarea.set_value(result.as_str()),
+            Err(error) => to_textarea.set_value(error),
+        }
     });
 
     html! {
@@ -85,7 +88,10 @@ pub fn decode_url() -> Html {
         let to_element = document.get_element_by_id("to").unwrap();
         let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
 
-        to_textarea.set_value(&url_decode(ti_textarea_content.as_str()));
+        match url_decode(ti_textarea_content.as_str()) {
+            Ok(result) => to_textarea.set_value(result.as_str()),
+            Err(error) => to_textarea.set_value(error),
+        }
     });
 
     html! {

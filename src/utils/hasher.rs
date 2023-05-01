@@ -14,4 +14,3 @@ pub fn sha256_hash(input: &str) -> String {
     let result = hasher.finalize();
     return hex::encode(result);
 }
-

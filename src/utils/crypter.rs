@@ -1,6 +1,6 @@
+use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyInit, KeyIvInit};
 use base64::{engine::general_purpose, Engine as _};
 use hex;
-use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyInit, KeyIvInit};
 
 pub fn aes_cbc_encrypt(
     key_size: usize,
@@ -8,13 +8,13 @@ pub fn aes_cbc_encrypt(
     iv: &str,
     plaintext: &str,
     hex_output: bool,
-) -> String {
+) -> Result<String, &'static str> {
     // Get key size in bytes
     let key_size_bytes = match key_size {
         128 => 16,
         192 => 24,
         256 => 32,
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     };
 
     // Get key as bytes
@@ -24,17 +24,17 @@ pub fn aes_cbc_encrypt(
     match hex::decode(key) {
         Ok(bytes_result) => {
             if key_size_bytes != bytes_result.len() {
-                return "The key does not have a correct length".to_string();
+                return Err("The key does not have a correct length");
             }
             match key_size {
                 128 => key_bytes_128.copy_from_slice(&bytes_result),
                 192 => key_bytes_192.copy_from_slice(&bytes_result),
                 256 => key_bytes_256.copy_from_slice(&bytes_result),
-                _ => return "The key size must be 128, 192, or 256".to_string(),
+                _ => return Err("The key size must be 128, 192, or 256"),
             };
         }
         Err(_) => {
-            return "The key is not an hexadecimal string".to_string();
+            return Err("The key is not an hexadecimal string");
         }
     }
 
@@ -43,12 +43,12 @@ pub fn aes_cbc_encrypt(
     match hex::decode(iv) {
         Ok(result) => {
             if result.len() != 16 {
-                return "The IV is not 16 bytes length".to_string();
+                return Err("The IV is not 16 bytes length");
             }
             iv_bytes.copy_from_slice(&result)
         }
         Err(_) => {
-            return "The IV is not an hexadecimal string".to_string();
+            return Err("The IV is not an hexadecimal string");
         }
     }
 
@@ -66,12 +66,12 @@ pub fn aes_cbc_encrypt(
             {
                 Ok(result) => {
                     if hex_output {
-                        return hex::encode(&result);
+                        return Ok(hex::encode(&result));
                     } else {
-                        return general_purpose::STANDARD.encode(&result);
+                        return Ok(general_purpose::STANDARD.encode(&result));
                     }
                 }
-                Err(_) => return "Failed to perform AES-128 encryption".to_string(),
+                Err(_) => return Err("Failed to perform AES-128 encryption"),
             }
         }
         192 => {
@@ -81,12 +81,12 @@ pub fn aes_cbc_encrypt(
             {
                 Ok(result) => {
                     if hex_output {
-                        return hex::encode(&result);
+                        return Ok(hex::encode(&result));
                     } else {
-                        return general_purpose::STANDARD.encode(&result);
+                        return Ok(general_purpose::STANDARD.encode(&result));
                     }
                 }
-                Err(_) => return "Failed to perform AES-192 encryption".to_string(),
+                Err(_) => return Err("Failed to perform AES-192 encryption"),
             }
         }
         256 => {
@@ -96,15 +96,15 @@ pub fn aes_cbc_encrypt(
             {
                 Ok(result) => {
                     if hex_output {
-                        return hex::encode(&result);
+                        return Ok(hex::encode(&result));
                     } else {
-                        return general_purpose::STANDARD.encode(&result);
+                        return Ok(general_purpose::STANDARD.encode(&result));
                     }
                 }
-                Err(_) => return "Failed to perform AES-256 encryption".to_string(),
+                Err(_) => return Err("Failed to perform AES-256 encryption"),
             }
         }
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     };
 }
 
@@ -114,13 +114,13 @@ pub fn aes_cbc_decrypt(
     iv: &str,
     ciphertext: &str,
     hex_input: bool,
-) -> String {
+) -> Result<String, &'static str> {
     // Get key size in bytes
     let key_size_bytes = match key_size {
         128 => 16,
         192 => 24,
         256 => 32,
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     };
 
     // Get key as bytes
@@ -130,17 +130,17 @@ pub fn aes_cbc_decrypt(
     match hex::decode(key) {
         Ok(bytes_result) => {
             if key_size_bytes != bytes_result.len() {
-                return "The key does not have a correct length".to_string();
+                return Err("The key does not have a correct length");
             }
             match key_size {
                 128 => key_bytes_128.copy_from_slice(&bytes_result),
                 192 => key_bytes_192.copy_from_slice(&bytes_result),
                 256 => key_bytes_256.copy_from_slice(&bytes_result),
-                _ => return "The key size must be 128, 192, or 256".to_string(),
+                _ => return Err("The key size must be 128, 192, or 256"),
             };
         }
         Err(_) => {
-            return "The key is not an hexadecimal string".to_string();
+            return Err("The key is not an hexadecimal string");
         }
     }
 
@@ -149,12 +149,12 @@ pub fn aes_cbc_decrypt(
     match hex::decode(iv) {
         Ok(result) => {
             if result.len() != 16 {
-                return "The IV is not 16 bytes length".to_string();
+                return Err("The IV is not 16 bytes length");
             }
             iv_bytes.copy_from_slice(&result)
         }
         Err(_) => {
-            return "The IV is not an hexadecimal string".to_string();
+            return Err("The IV is not an hexadecimal string");
         }
     }
 
@@ -163,12 +163,12 @@ pub fn aes_cbc_decrypt(
     if hex_input {
         match hex::decode(ciphertext) {
             Ok(bytes_result) => ciphertext_bytes = bytes_result,
-            Err(_) => return "The ciphertext is not an hexadecimal string".to_string(),
+            Err(_) => return Err("The ciphertext is not an hexadecimal string"),
         }
     } else {
         match general_purpose::STANDARD.decode(ciphertext) {
             Ok(bytes_result) => ciphertext_bytes = bytes_result,
-            Err(_) => return "The ciphertext is not a base 64 string".to_string(),
+            Err(_) => return Err("The ciphertext is not a base 64 string"),
         }
     }
 
@@ -180,10 +180,10 @@ pub fn aes_cbc_decrypt(
                 .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
             {
                 Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
-                    Ok(string_result) => string_result.to_string(),
-                    Err(_) => "Failed to perform AES-128 decryption".to_string(),
+                    Ok(string_result) => Ok(string_result.to_string()),
+                    Err(_) => Err("Failed to perform AES-128 decryption"),
                 },
-                Err(_) => "Failed to perform AES-128 decryption".to_string(),
+                Err(_) => Err("Failed to perform AES-128 decryption"),
             }
         }
         192 => {
@@ -192,10 +192,10 @@ pub fn aes_cbc_decrypt(
                 .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
             {
                 Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
-                    Ok(string_result) => string_result.to_string(),
-                    Err(_) => "Failed to perform AES-192 decryption".to_string(),
+                    Ok(string_result) => Ok(string_result.to_string()),
+                    Err(_) => Err("Failed to perform AES-192 decryption"),
                 },
-                Err(_) => "Failed to perform AES-192 decryption".to_string(),
+                Err(_) => Err("Failed to perform AES-192 decryption"),
             }
         }
         256 => {
@@ -204,23 +204,28 @@ pub fn aes_cbc_decrypt(
                 .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
             {
                 Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
-                    Ok(string_result) => string_result.to_string(),
-                    Err(_) => "Failed to perform AES-256 decryption".to_string(),
+                    Ok(string_result) => Ok(string_result.to_string()),
+                    Err(_) => Err("Failed to perform AES-256 decryption"),
                 },
-                Err(_) => "Failed to perform AES-256 decryption".to_string(),
+                Err(_) => Err("Failed to perform AES-256 decryption"),
             }
         }
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     }
 }
 
-pub fn aes_ecb_encrypt(key_size: usize, key: &str, plaintext: &str, hex_output: bool) -> String {
+pub fn aes_ecb_encrypt(
+    key_size: usize,
+    key: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> Result<String, &'static str> {
     // Get key size in bytes
     let key_size_bytes = match key_size {
         128 => 16,
         192 => 24,
         256 => 32,
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     };
 
     // Get key as bytes
@@ -230,17 +235,17 @@ pub fn aes_ecb_encrypt(key_size: usize, key: &str, plaintext: &str, hex_output: 
     match hex::decode(key) {
         Ok(bytes_result) => {
             if key_size_bytes != bytes_result.len() {
-                return "The key does not have a correct length".to_string();
+                return Err("The key does not have a correct length");
             }
             match key_size {
                 128 => key_bytes_128.copy_from_slice(&bytes_result),
                 192 => key_bytes_192.copy_from_slice(&bytes_result),
                 256 => key_bytes_256.copy_from_slice(&bytes_result),
-                _ => return "The key size must be 128, 192, or 256".to_string(),
+                _ => return Err("The key size must be 128, 192, or 256"),
             };
         }
         Err(_) => {
-            return "The key is not an hexadecimal string".to_string();
+            return Err("The key is not an hexadecimal string");
         }
     }
 
@@ -258,12 +263,12 @@ pub fn aes_ecb_encrypt(key_size: usize, key: &str, plaintext: &str, hex_output: 
             {
                 Ok(result) => {
                     if hex_output {
-                        return hex::encode(&result);
+                        return Ok(hex::encode(&result));
                     } else {
-                        return general_purpose::STANDARD.encode(&result);
+                        return Ok(general_purpose::STANDARD.encode(&result));
                     }
                 }
-                Err(_) => return "Failed to perform AES-128 encryption".to_string(),
+                Err(_) => return Err("Failed to perform AES-128 encryption"),
             }
         }
         192 => {
@@ -273,12 +278,12 @@ pub fn aes_ecb_encrypt(key_size: usize, key: &str, plaintext: &str, hex_output: 
             {
                 Ok(result) => {
                     if hex_output {
-                        return hex::encode(&result);
+                        return Ok(hex::encode(&result));
                     } else {
-                        return general_purpose::STANDARD.encode(&result);
+                        return Ok(general_purpose::STANDARD.encode(&result));
                     }
                 }
-                Err(_) => return "Failed to perform AES-192 encryption".to_string(),
+                Err(_) => return Err("Failed to perform AES-192 encryption"),
             }
         }
         256 => {
@@ -288,25 +293,30 @@ pub fn aes_ecb_encrypt(key_size: usize, key: &str, plaintext: &str, hex_output: 
             {
                 Ok(result) => {
                     if hex_output {
-                        return hex::encode(&result);
+                        return Ok(hex::encode(&result));
                     } else {
-                        return general_purpose::STANDARD.encode(&result);
+                        return Ok(general_purpose::STANDARD.encode(&result));
                     }
                 }
-                Err(_) => return "Failed to perform AES-256 encryption".to_string(),
+                Err(_) => return Err("Failed to perform AES-256 encryption"),
             }
         }
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     };
 }
 
-pub fn aes_ecb_decrypt(key_size: usize, key: &str, ciphertext: &str, hex_input: bool) -> String {
+pub fn aes_ecb_decrypt(
+    key_size: usize,
+    key: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> Result<String, &'static str> {
     // Get key size in bytes
     let key_size_bytes = match key_size {
         128 => 16,
         192 => 24,
         256 => 32,
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     };
 
     // Get key as bytes
@@ -316,17 +326,17 @@ pub fn aes_ecb_decrypt(key_size: usize, key: &str, ciphertext: &str, hex_input: 
     match hex::decode(key) {
         Ok(bytes_result) => {
             if key_size_bytes != bytes_result.len() {
-                return "The key does not have a correct length".to_string();
+                return Err("The key does not have a correct length");
             }
             match key_size {
                 128 => key_bytes_128.copy_from_slice(&bytes_result),
                 192 => key_bytes_192.copy_from_slice(&bytes_result),
                 256 => key_bytes_256.copy_from_slice(&bytes_result),
-                _ => return "The key size must be 128, 192, or 256".to_string(),
+                _ => return Err("The key size must be 128, 192, or 256"),
             };
         }
         Err(_) => {
-            return "The key is not an hexadecimal string".to_string();
+            return Err("The key is not an hexadecimal string");
         }
     }
 
@@ -335,12 +345,12 @@ pub fn aes_ecb_decrypt(key_size: usize, key: &str, ciphertext: &str, hex_input: 
     if hex_input {
         match hex::decode(ciphertext) {
             Ok(bytes_result) => ciphertext_bytes = bytes_result,
-            Err(_) => return "The ciphertext is not an hexadecimal string".to_string(),
+            Err(_) => return Err("The ciphertext is not an hexadecimal string"),
         }
     } else {
         match general_purpose::STANDARD.decode(ciphertext) {
             Ok(bytes_result) => ciphertext_bytes = bytes_result,
-            Err(_) => return "The ciphertext is not a base 64 string".to_string(),
+            Err(_) => return Err("The ciphertext is not a base 64 string"),
         }
     }
 
@@ -352,10 +362,10 @@ pub fn aes_ecb_decrypt(key_size: usize, key: &str, ciphertext: &str, hex_input: 
                 .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
             {
                 Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
-                    Ok(string_result) => string_result.to_string(),
-                    Err(_) => "Failed to perform AES-128 decryption".to_string(),
+                    Ok(string_result) => Ok(string_result.to_string()),
+                    Err(_) => Err("Failed to perform AES-128 decryption"),
                 },
-                Err(_) => "Failed to perform AES-128 decryption".to_string(),
+                Err(_) => Err("Failed to perform AES-128 decryption"),
             }
         }
         192 => {
@@ -364,10 +374,10 @@ pub fn aes_ecb_decrypt(key_size: usize, key: &str, ciphertext: &str, hex_input: 
                 .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
             {
                 Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
-                    Ok(string_result) => string_result.to_string(),
-                    Err(_) => "Failed to perform AES-192 decryption".to_string(),
+                    Ok(string_result) => Ok(string_result.to_string()),
+                    Err(_) => Err("Failed to perform AES-192 decryption"),
                 },
-                Err(_) => "Failed to perform AES-192 decryption".to_string(),
+                Err(_) => Err("Failed to perform AES-192 decryption"),
             }
         }
         256 => {
@@ -376,13 +386,13 @@ pub fn aes_ecb_decrypt(key_size: usize, key: &str, ciphertext: &str, hex_input: 
                 .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
             {
                 Ok(bytes_result) => match std::str::from_utf8(bytes_result) {
-                    Ok(string_result) => string_result.to_string(),
-                    Err(_) => "Failed to perform AES-256 decryption".to_string(),
+                    Ok(string_result) => Ok(string_result.to_string()),
+                    Err(_) => Err("Failed to perform AES-256 decryption"),
                 },
-                Err(_) => "Failed to perform AES-256 decryption".to_string(),
+                Err(_) => Err("Failed to perform AES-256 decryption"),
             }
         }
-        _ => return "The key size must be 128, 192, or 256".to_string(),
+        _ => return Err("The key size must be 128, 192, or 256"),
     }
 }
 
