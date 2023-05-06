@@ -10,6 +10,8 @@ use crate::utils::route::Route;
 
 use crate::utils::crypter::*;
 
+use gloo_console::log;
+
 #[function_component(Encrypt)]
 pub fn encrypt() -> Html {
     let navigator1 = use_navigator().unwrap();
@@ -27,6 +29,25 @@ pub fn encrypt() -> Html {
 
 #[function_component(EncryptAes)]
 pub fn encrypt_aes() -> Html {
+
+    
+    let is_cbc = use_state(|| true);
+
+    let on_mode_click = {
+        let is_cbc = is_cbc.clone();
+        move |_| {
+            
+            let window = web_sys::window().unwrap();
+            let document = window.document().unwrap();
+    
+            let mode_element = document.get_element_by_id("mode").unwrap();
+            let mode_input = mode_element.dyn_into::<HtmlSelectElement>().unwrap();
+            let mode = mode_input.value();
+
+            is_cbc.set(mode == "cbc");
+        }
+    };
+
     let onclick = Callback::from(move |_: MouseEvent| {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
@@ -76,22 +97,25 @@ pub fn encrypt_aes() -> Html {
                 <div>
                     <label for="mode">{ "Mode" }</label>
                     <br />
-                    <select id="mode">
-                        <option value="cbc" selected=true>{"CBC"}</option>
-                        <option value="ecb">{"ECB"}</option>
+                    <select id="mode" onclick={on_mode_click}>
+                        <option value="cbc" selected=true >{"CBC"}</option>
+                        <option value="ecb" >{"ECB"}</option>
                     </select>
                 </div>
 
                 <br />
 
-                <div>
-                    <label for="iv">{ "IV (hexadecimal)" }</label>
+                if *is_cbc {
+
+                    <div>
+                        <label for="iv">{ "IV (hexadecimal)" }</label>
+                        <br />
+                        <input type="text" id="iv" min="32" max="32" value="00000000000000000000000000000000"/>
+                    </div>
+
                     <br />
-                    <input type="text" id="iv" min="32" max="32" value="00000000000000000000000000000000"/>
-                </div>
-
-                <br />
-
+                }
+                
                 <div>
                     <label for="key">{ "Key (hexadecimal)" }</label>
                     <br />
