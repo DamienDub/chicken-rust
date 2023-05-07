@@ -3,13 +3,8 @@ use yew_router::prelude::*;
 
 use crate::utils::route::Route;
 
-use wasm_bindgen::JsCast;
-use web_sys::HtmlInputElement;
-use web_sys::HtmlTextAreaElement;
-
-use gloo_console::log;
-
 use crate::utils::generator::*;
+use crate::utils::html::*;
 
 #[function_component(Generate)]
 pub fn generate() -> Html {
@@ -32,28 +27,19 @@ pub fn generate_random_string() -> Html {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let length_element = document.get_element_by_id("length").unwrap();
-        let length_input = length_element.dyn_into::<HtmlInputElement>().unwrap();
+        let length_input = get_input_element(&document, "length");
         let length = length_input.value().parse::<usize>().unwrap();
 
-        let with_lowercase_element = document.get_element_by_id("withLowercase").unwrap();
-        let with_lowercase_input = with_lowercase_element
-            .dyn_into::<HtmlInputElement>()
-            .unwrap();
+        let with_lowercase_input = get_input_element(&document, "withLowercase");
         let with_lowercase = with_lowercase_input.checked();
 
-        let with_uppercase_element = document.get_element_by_id("withUppercase").unwrap();
-        let with_uppercase_input = with_uppercase_element
-            .dyn_into::<HtmlInputElement>()
-            .unwrap();
+        let with_uppercase_input = get_input_element(&document, "withUppercase");
         let with_uppercase = with_uppercase_input.checked();
 
-        let with_numbers_element = document.get_element_by_id("withNumbers").unwrap();
-        let with_numbers_input = with_numbers_element.dyn_into::<HtmlInputElement>().unwrap();
+        let with_numbers_input = get_input_element(&document, "withNumbers");
         let with_numbers = with_numbers_input.checked();
 
-        let to_element = document.get_element_by_id("to").unwrap();
-        let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let to_textarea = get_textarea_element(&document, "to");
 
         match random_string_generate(length, with_lowercase, with_uppercase, with_numbers) {
             Ok(result) => to_textarea.set_value(result.as_str()),
@@ -99,7 +85,7 @@ pub fn generate_random_string() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Generate" }</button>
+                    <button {onclick}>{ "Generate" }</button>
                 </div>
 
                 <br />

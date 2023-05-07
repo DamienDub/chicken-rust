@@ -6,8 +6,13 @@ pub fn random_string_generate(
     with_uppercase: bool,
     with_numbers: bool,
 ) -> Result<String, &'static str> {
+    
     if !with_lowercase && !with_uppercase && !with_numbers {
         return Err("You must choose something");
+    }
+
+    if length <= 0 {
+        return Err("The length is not correct")
     }
 
     let mut charset: Vec<u8> = Vec::new();

@@ -3,4 +3,5 @@ pub mod coder;
 pub mod hasher;
 pub mod generator;
 pub mod crypter;
+pub mod html;
 

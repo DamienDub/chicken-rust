@@ -3,10 +3,8 @@ use yew_router::prelude::*;
 
 use crate::utils::route::Route;
 
-use wasm_bindgen::JsCast;
-use web_sys::HtmlTextAreaElement;
-
 use crate::utils::coder::*;
+use crate::utils::html::*;
 
 #[function_component(Encode)]
 pub fn encode() -> Html {
@@ -37,12 +35,10 @@ pub fn encode_base64() -> Html {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let ti_element = document.get_element_by_id("ti").unwrap();
-        let ti_textarea = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let ti_textarea = get_textarea_element(&document, "ti");
         let ti_textarea_content = ti_textarea.value();
 
-        let to_element = document.get_element_by_id("to").unwrap();
-        let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let to_textarea = get_textarea_element(&document, "to");
 
         to_textarea.set_value(&base64_encode(ti_textarea_content.as_str()));
     });
@@ -78,12 +74,10 @@ pub fn encode_url() -> Html {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let ti_element = document.get_element_by_id("ti").unwrap();
-        let ti_textarea = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let ti_textarea = get_textarea_element(&document, "ti");
         let ti_textarea_content = ti_textarea.value();
 
-        let to_element = document.get_element_by_id("to").unwrap();
-        let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let to_textarea = get_textarea_element(&document, "to");
 
         to_textarea.set_value(&url_encode(ti_textarea_content.as_str()));
     });

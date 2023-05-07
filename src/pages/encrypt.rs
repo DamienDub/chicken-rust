@@ -2,15 +2,12 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use wasm_bindgen::JsCast;
-use web_sys::HtmlInputElement;
 use web_sys::HtmlSelectElement;
-use web_sys::HtmlTextAreaElement;
 
 use crate::utils::route::Route;
 
 use crate::utils::crypter::*;
-
-use gloo_console::log;
+use crate::utils::html::*;
 
 #[function_component(Encrypt)]
 pub fn encrypt() -> Html {
@@ -29,17 +26,13 @@ pub fn encrypt() -> Html {
 
 #[function_component(EncryptAes)]
 pub fn encrypt_aes() -> Html {
-
-    
     let is_cbc = use_state(|| true);
-
     let on_mode_click = {
         let is_cbc = is_cbc.clone();
         move |_| {
-            
             let window = web_sys::window().unwrap();
             let document = window.document().unwrap();
-    
+
             let mode_element = document.get_element_by_id("mode").unwrap();
             let mode_input = mode_element.dyn_into::<HtmlSelectElement>().unwrap();
             let mode = mode_input.value();
@@ -48,33 +41,27 @@ pub fn encrypt_aes() -> Html {
         }
     };
 
-    let onclick = Callback::from(move |_: MouseEvent| {
+    let onclick = Callback::from(move |_| {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let mode_element = document.get_element_by_id("mode").unwrap();
-        let mode_input = mode_element.dyn_into::<HtmlSelectElement>().unwrap();
+        let mode_input = get_select_element(&document, "mode");
         let mode = mode_input.value();
 
-        let iv_element = document.get_element_by_id("iv").unwrap();
-        let iv_input = iv_element.dyn_into::<HtmlInputElement>().unwrap();
+        let iv_input = get_input_element(&document, "iv");
         let iv = iv_input.value();
 
-        let key_element = document.get_element_by_id("key").unwrap();
-        let key_input = key_element.dyn_into::<HtmlInputElement>().unwrap();
+        let key_input = get_input_element(&document, "key");
         let key = key_input.value();
 
-        let output_element = document.get_element_by_id("output").unwrap();
-        let output_input = output_element.dyn_into::<HtmlSelectElement>().unwrap();
+        let output_input = get_select_element(&document, "output");
         let output = output_input.value();
         let is_hex = output == "hexadecimal";
 
-        let ti_element = document.get_element_by_id("ti").unwrap();
-        let ti_input = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let ti_input = get_textarea_element(&document, "ti");
         let ti = ti_input.value();
 
-        let to_element = document.get_element_by_id("to").unwrap();
-        let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let to_textarea = get_textarea_element(&document, "to");
 
         match mode.as_str() {
             "cbc" => match aes_cbc_encrypt(128, key.as_str(), iv.as_str(), ti.as_str(), is_hex) {
@@ -115,7 +102,7 @@ pub fn encrypt_aes() -> Html {
 
                     <br />
                 }
-                
+
                 <div>
                     <label for="key">{ "Key (hexadecimal)" }</label>
                     <br />

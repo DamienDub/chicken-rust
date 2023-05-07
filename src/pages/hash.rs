@@ -1,12 +1,10 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use wasm_bindgen::JsCast;
-use web_sys::HtmlTextAreaElement;
-
 use crate::utils::route::Route;
 
 use crate::utils::hasher::*;
+use crate::utils::html::*;
 
 #[function_component(Hash)]
 pub fn hash() -> Html {
@@ -35,12 +33,10 @@ pub fn hash_sha1() -> Html {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let ti_element = document.get_element_by_id("ti").unwrap();
-        let ti_textarea = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let ti_textarea = get_textarea_element(&document, "ti");
         let ti_textarea_content = ti_textarea.value();
 
-        let to_element = document.get_element_by_id("to").unwrap();
-        let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let to_textarea = get_textarea_element(&document, "to");
 
         to_textarea.set_value(&sha1_hash(ti_textarea_content.as_str()));
     });
@@ -76,12 +72,10 @@ pub fn hash_sha256() -> Html {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let ti_element = document.get_element_by_id("ti").unwrap();
-        let ti_textarea = ti_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let ti_textarea = get_textarea_element(&document, "ti");
         let ti_textarea_content = ti_textarea.value();
 
-        let to_element = document.get_element_by_id("to").unwrap();
-        let to_textarea = to_element.dyn_into::<HtmlTextAreaElement>().unwrap();
+        let to_textarea = get_textarea_element(&document, "to");
 
         to_textarea.set_value(&sha256_hash(ti_textarea_content.as_str()));
     });
