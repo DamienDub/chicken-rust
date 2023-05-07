@@ -53,7 +53,7 @@ pub fn hash_sha1() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Hash" }</button>
+                    <button {onclick}>{ "Hash" }</button>
                 </div>
 
                 <br />

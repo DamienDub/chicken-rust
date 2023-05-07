@@ -110,7 +110,7 @@ pub fn decrypt_aes() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Decrypt" }</button>
+                    <button {onclick}>{ "Decrypt" }</button>
                 </div>
 
                 <br />

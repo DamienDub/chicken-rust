@@ -131,7 +131,7 @@ pub fn encrypt_aes() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Encrypt" }</button>
+                    <button {onclick}>{ "Encrypt" }</button>
                 </div>
 
                 <br />

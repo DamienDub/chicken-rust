@@ -94,7 +94,7 @@ pub fn encode_url() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Encode" }</button>
+                    <button {onclick}>{ "Encode" }</button>
                 </div>
 
                 <br />

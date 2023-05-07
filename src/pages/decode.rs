@@ -58,7 +58,7 @@ pub fn decode_base64() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Decode" }</button>
+                    <button {onclick}>{ "Decode" }</button>
                 </div>
 
                 <br />
@@ -100,7 +100,7 @@ pub fn decode_url() -> Html {
                 <br />
 
                 <div>
-                    <button onclick={onclick}>{ "Decode" }</button>
+                    <button {onclick}>{ "Decode" }</button>
                 </div>
 
                 <br />
