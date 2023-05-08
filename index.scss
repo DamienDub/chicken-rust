@@ -1,35 +1,131 @@
-html,
-body {
+html{
   height: 100%;
+}
+
+body {  
   margin: 0;
 }
 
 body {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-
-  background: linear-gradient(to bottom right, #444444, #009a5b);
+  /* sets the left and right margin to automatic, which centers the element horizontally */
+  margin: 0 auto;
+  /* sets the maximum width of the element to 960 pixels to ensure that it doesn't become too wide on larger screens */
+  max-width: 960px;
+  background: linear-gradient(to bottom, #141E30, #243B55);
   font-size: 1.5rem;
 }
 
 main {
-  color: #fff6d5;
+  color: #e6f2ff;
   font-family: sans-serif;
   text-align: center;
 }
 
-.logo {
-  height: 20em;
+h1 {
+  /* sets the font family to a modern sans-serif font */
+  font-family: "Roboto", Arial, sans-serif;
+  /* sets the font size to a large, prominent size */
+  font-size: 4em;
+  /* sets the font weight to bold for added emphasis */
+  font-weight: bold;
+  /* adds some extra space between letters */
+  letter-spacing: 2px;
+  /* centers the text horizontally within its container */
+  text-align: center;
+  /* capitalizes all the letters in the heading */
+  text-transform: uppercase;
+  /* sets the text color */
+  color: #e6f2ff;
+  /* adds a subtle shadow to the text */
+  text-shadow: 1px 1px 0 #000;
+  /* adds some spacing below the heading to separate it from subsequent content */
+  margin-bottom: 0.5em;
+  cursor: default;
+
 }
 
-.heart:after {
-  content: "❤️";
-
-  font-size: 1.75em;
-}
-
-h1 + .subtitle {
+.subtitle {
   display: block;
   margin-top: -1em;
+  cursor: default;
+
 }
+
+hr {
+  border: 1px solid #e6f2ff;
+}
+
+a {
+  color: #e6f2ff;
+}
+
+button {
+  display: inline-block;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #e6f2ff;
+  text-transform: uppercase;
+  background-color: #141E30;
+  border: none;
+  border-radius: 25px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+}
+
+button:hover {
+  background-color: #243B55;
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-7px);
+}
+
+button:active {
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px;
+  margin-top: 16px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #e6f2ff;
+  width: 260px;
+}
+
+.tooltip .tooltiptext::before {
+  content: "";
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -32px;
+  border-width: 16px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.clue {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #e6f2ff;
+  text-align: center;
+  font-size: 12px;
+  line-height: 18px;
+  cursor: default;
+}
+

@@ -37,35 +37,65 @@ pub fn home() -> Html {
 
     html! {
         <main>
-            <h1>{ "Welcome to Chicken Rust" }</h1>
-            <span class="subtitle">{ "Fast. Confidential. Open source" }</span>
+            <h1>{ "Chicken Rust" }</h1>
+            <span class="subtitle">
 
-            <br /><br />
+            <u class="tooltip">{ "Fast" }
+                <span class="tooltiptext">
+                    {"Built with "} <a href="https://yew.rs">{"Yew"}</a> {" and "} <a href="https://www.rust-lang.org">{"Rust"}</a> { " in order to run at near-native speed."}
+                </span>
+            </u>
+            { ", "}
+            <u class="tooltip">{ "private" }
+                <span class="tooltiptext">
+                    {"No cookie stored, no HTTP request sent. Everything happens in your browser. "}
+                </span>
+            </u>
+            { " and "}
+            <u class="tooltip">{ "open source" }
+                <span class="tooltiptext">
+                    {"Check out the code on the "}  <a href="https://github.com/DamienDub/chicken-rust">{"Github repository"} {"."}</a>
+                </span>
+            </u>
+            {" text toolbox" }
 
-            <span class="subtitle">{ "What would you like to do ?" }</span>
+            </span>
+
+            <br />
+            <hr />
+            <br />
+            <br />
+
+            <span class="subtitle">{ "What are we doing today ?" }</span>
+
+            <br />
 
             <div>
-                <button onclick={to_encode}>{ "I want to encode" }</button>
+                // <span class="clue">{"?"}</span> 
+                // {" "}
+                <button onclick={to_encode}>{ "Text encoding" }</button>
+                {" / "}
+                <button onclick={to_decode}>{ "Text decoding" }</button>
+                // {" "}
+                // <span class="clue">{"?"}</span> 
             </div>
 
-            <div>
-                <button onclick={to_decode}>{ "I want to decode" }</button>
-            </div>
+            <br />
 
             <div>
-                <button onclick={to_generate}>{ "I want to generate" }</button>
+                <button onclick={to_encrypt}>{ "Text encryption" }</button> {" / "} <button onclick={to_decrypt}>{ "Text decryption" }</button>
             </div>
 
-            <div>
-                <button onclick={to_hash}>{ "I want to hash" }</button>
-            </div>
+            <br />
 
             <div>
-                <button onclick={to_encrypt}>{ "I want to encrypt" }</button>
+                <button onclick={to_hash}>{ "Text hashing" }</button>
             </div>
 
+            <br />
+
             <div>
-                <button onclick={to_decrypt}>{ "I want to decrypt" }</button>
+                <button onclick={to_generate}>{ "Text generation" }</button>
             </div>
 
         </main>
