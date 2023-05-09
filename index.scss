@@ -12,20 +12,15 @@ body {
   /* sets the maximum width of the element to 960 pixels to ensure that it doesn't become too wide on larger screens */
   max-width: 960px;
   background: linear-gradient(to bottom, #141E30, #243B55);
-  font-size: 1.5rem;
 }
 
-main {
-  color: #e6f2ff;
-  font-family: sans-serif;
-  text-align: center;
-}
+
 
 h1 {
   /* sets the font family to a modern sans-serif font */
   font-family: "Roboto", Arial, sans-serif;
   /* sets the font size to a large, prominent size */
-  font-size: 4em;
+  font-size: 5.2em;
   /* sets the font weight to bold for added emphasis */
   font-weight: bold;
   /* adds some extra space between letters */
@@ -37,18 +32,31 @@ h1 {
   /* sets the text color */
   color: #e6f2ff;
   /* adds a subtle shadow to the text */
-  text-shadow: 1px 1px 0 #000;
-  /* adds some spacing below the heading to separate it from subsequent content */
-  margin-bottom: 0.5em;
+  text-shadow: 4px 4px 0 #D50000;
+
   cursor: default;
 
 }
 
-.subtitle {
+h2 {
   display: block;
+  text-align: center;
   margin-top: -1em;
+  font-size: 2em;
   cursor: default;
 
+}
+
+h3 {
+  display: block;
+  text-align: center;
+  font-size: 1.5em;
+  cursor: default;
+}
+
+main {
+  color: #e6f2ff;
+  font-family: sans-serif;
 }
 
 hr {

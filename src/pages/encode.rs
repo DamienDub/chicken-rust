@@ -17,12 +17,21 @@ pub fn encode() -> Html {
     html! {
         <main>
         <div>
-            <h1>{ "Encode with" }</h1>
-            <div>
-                 <button onclick={to_base64}>{ "Base 64" }</button>
-            </div>
-            <div>
-                <button onclick={to_url}>{ "URL encoding" }</button>
+            <br />
+            <br />
+            <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Encode" }</span>
+            <hr />
+            
+            <h3>{ "Encoding to..." }</h3>
+
+            <div style="text-align: center;">
+                <div>
+                    <button onclick={to_base64}>{ "UTF-8 then Base 64" }</button>
+                </div>
+                <br />
+                <div>
+                    <button onclick={to_url}>{ "URL encoding" }</button>
+                </div>
             </div>
         </div>
         </main>
@@ -46,22 +55,35 @@ pub fn encode_base64() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text" }</h1>
-
-                <div>
-                    <textarea id="ti" />
-                </div>
 
                 <br />
-
-                <div>
-                    <button onclick={onclick}>{ "Encode" }</button>
-                </div>
-
                 <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Encode}>{ "Encode" }</Link<Route>>
+                    {" / Base 64" }
+                </span>
+                <hr />
 
-                <div>
-                    <textarea id="to" />
+                <h3>{ "Please enter some text" }</h3>
+
+                <div style="text-align: center;">
+                    <div>
+                        <textarea id="ti" />
+                    </div>
+
+                    <br />
+
+                    <div>
+                        <button onclick={onclick}>{ "Encode" }</button>
+                    </div>
+
+                    <br />
+
+                    <div>
+                        <textarea id="to" />
+                    </div>
                 </div>
             </div>
         </main>
@@ -85,22 +107,35 @@ pub fn encode_url() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some URL" }</h1>
-
-                <div>
-                    <textarea id="ti" />
-                </div>
 
                 <br />
-
-                <div>
-                    <button {onclick}>{ "Encode" }</button>
-                </div>
-
                 <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Encode}>{ "Encode" }</Link<Route>>
+                    {" / URL Encoding" }
+                </span>
+                <hr />
 
-                <div>
-                    <textarea id="to" />
+                <h3>{ "Please enter some URL" }</h3>
+
+                <div style="text-align: center;">
+                    <div>
+                        <textarea id="ti" />
+                    </div>
+
+                    <br />
+
+                    <div>
+                        <button {onclick}>{ "Encode" }</button>
+                    </div>
+
+                    <br />
+
+                    <div>
+                        <textarea id="to" />
+                    </div>
                 </div>
             </div>
         </main>

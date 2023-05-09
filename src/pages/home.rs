@@ -38,64 +38,67 @@ pub fn home() -> Html {
     html! {
         <main>
             <h1>{ "Chicken Rust" }</h1>
-            <span class="subtitle">
+            <h2>
 
-            <u class="tooltip">{ "Fast" }
-                <span class="tooltiptext">
-                    {"Built with "} <a href="https://yew.rs">{"Yew"}</a> {" and "} <a href="https://www.rust-lang.org">{"Rust"}</a> { " in order to run at near-native speed."}
-                </span>
-            </u>
-            { ", "}
-            <u class="tooltip">{ "private" }
-                <span class="tooltiptext">
-                    {"No cookie stored, no HTTP request sent. Everything happens in your browser. "}
-                </span>
-            </u>
-            { " and "}
-            <u class="tooltip">{ "open source" }
-                <span class="tooltiptext">
-                    {"Check out the code on the "}  <a href="https://github.com/DamienDub/chicken-rust">{"Github repository"} {"."}</a>
-                </span>
-            </u>
-            {" text toolbox" }
-
-            </span>
+                <u class="tooltip">{ "Fast" }
+                    <span class="tooltiptext">
+                        {"Built with "} <a href="https://yew.rs">{"Yew"}</a> {" and "} <a href="https://www.rust-lang.org">{"Rust"}</a> { " in order to run at near-native speed."}
+                    </span>
+                </u>
+                { ", "}
+                <u class="tooltip">{ "private" }
+                    <span class="tooltiptext">
+                        {"No cookie stored, no HTTP request sent. Everything happens in your browser. "}
+                    </span>
+                </u>
+                { " and "}
+                <u class="tooltip">{ "open source" }
+                    <span class="tooltiptext">
+                        {"Check out the code on the "}  <a href="https://github.com/DamienDub/chicken-rust">{"Github repository"} {"."}</a>
+                    </span>
+                </u>
+                {" text toolbox" }
+            </h2>
 
             <br />
             <hr />
             <br />
             <br />
 
-            <span class="subtitle">{ "What are we doing today ?" }</span>
+            <h3>{ "What are we doing today ?" }</h3>
 
             <br />
 
-            <div>
-                // <span class="clue">{"?"}</span> 
-                // {" "}
-                <button onclick={to_encode}>{ "Text encoding" }</button>
-                {" / "}
-                <button onclick={to_decode}>{ "Text decoding" }</button>
-                // {" "}
-                // <span class="clue">{"?"}</span> 
-            </div>
+            <div style="text-align: center;">
+                <div>
+                    // <span class="clue">{"?"}</span> 
+                    // {" "}
+                    <button onclick={to_encode}>{ "Text encoding" }</button>
+                    {" / "}
+                    <button onclick={to_decode}>{ "Text decoding" }</button>
+                    // {" "}
+                    // <span class="clue">{"?"}</span> 
+                </div>
 
-            <br />
+                <br />
 
-            <div>
-                <button onclick={to_encrypt}>{ "Text encryption" }</button> {" / "} <button onclick={to_decrypt}>{ "Text decryption" }</button>
-            </div>
+                <div>
+                    <button onclick={to_encrypt}>{ "Text encryption" }</button> 
+                    {" / "} 
+                    <button onclick={to_decrypt}>{ "Text decryption" }</button>
+                </div>
 
-            <br />
+                <br />
 
-            <div>
-                <button onclick={to_hash}>{ "Text hashing" }</button>
-            </div>
+                <div>
+                    <button onclick={to_hash}>{ "Text hashing" }</button>
+                </div>
 
-            <br />
+                <br />
 
-            <div>
-                <button onclick={to_generate}>{ "Text generation" }</button>
+                <div>
+                    <button onclick={to_generate}>{ "Text generation" }</button>
+                </div>
             </div>
 
         </main>
