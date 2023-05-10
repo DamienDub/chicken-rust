@@ -2,12 +2,12 @@
 name = "chicken-rust"
 version = "0.1.0"
 edition = "2021"
-description = "Browser based data toolbox"
+description = "Rust-based text toolbox"
 readme = "README.md"
-repository = "https://github.com/yewstack/yew-trunk-minimal-template"
-license = "MIT OR Apache-2.0"
-keywords = ["yew", "trunk"]
-categories = ["gui", "wasm", "web-programming"]
+repository = "https://github.com/DamienDub/chicken-rust"
+license = "Apache-2.0"
+keywords = ["encoding", "encryption"]
+categories = ["encoding", "encryption", "wasm", "web-programming"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]

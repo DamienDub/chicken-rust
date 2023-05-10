@@ -1,12 +1,11 @@
-# Yew Trunk Template
+# Chicken Rust
 
-This is a fairly minimal template for a Yew app that's built with [Trunk].
+## What is it
 
-## Usage
+Chicken Rust is a web application for manipulating text data.
+It is built with [Yew](https://yew.rs), a Rust-based frontend framework.
 
-For a more thorough explanation of Trunk and its features, please head over to the [repository][trunk].
-
-### Installation
+## Installation
 
 If you don't already have it installed, it's time to install Rust: <https://www.rust-lang.org/tools/install>.
 The rest of this guide assumes a typical Rust installation which contains both `rustup` and Cargo.
@@ -25,9 +24,9 @@ Simply run the following command to install it:
 cargo install trunk wasm-bindgen-cli
 ```
 
-That's it, we're done!
+And you're done.
 
-### Running
+## Running
 
 ```bash
 trunk serve
@@ -37,7 +36,7 @@ Rebuilds the app whenever a change is detected and runs a local server to host i
 
 There's also the `trunk watch` command which does the same thing but without hosting it.
 
-### Release
+## Release
 
 ```bash
 trunk build --release
@@ -48,32 +47,19 @@ You can also pass the `--release` flag to `trunk serve` if you need to get every
 
 Unless overwritten, the output will be located in the `dist` directory.
 
-## Using this template
+## Contributing
 
-There are a few things you have to adjust when adopting this template.
+We welcome contributionsIf you'd like to contribute to the project, please follow these steps:
 
-### Remove example code
+Fork the repository
+Create a new branch: git checkout -b my-new-feature
+Make your changes and commit them: git commit -am 'Add some feature'
+Push to the branch: git push origin my-new-feature
+Submit a pull request
 
-The code in [src/main.rs](src/main.rs) specific to the example is limited to only the `view` method.
-There is, however, a fair bit of Sass in [index.scss](index.scss) you can remove.
+## License
 
-### Update metadata
+This code is released under the Apache 2.0 license.
 
-Update the `name`, `version`, `description` and `repository` fields in the [Cargo.toml](Cargo.toml) file.
-The [index.html](index.html) file also contains a `<title>` tag that needs updating.
-
-Finally, you should update this very `README` file to be about your app.
-
-### License
-
-The template ships with both the Apache and MIT license.
-If you don't want to have your app dual licensed, just remove one (or both) of the files and update the `license` field in `Cargo.toml`.
-
-There are two empty spaces in the MIT license you need to fill out: `` and `Damien Dub <damien.dub@gmail.com>`.
-
-[trunk]: https://github.com/thedodd/trunk
-
-
-### Notes
 
 
