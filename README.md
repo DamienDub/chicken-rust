@@ -49,13 +49,13 @@ Unless overwritten, the output will be located in the `dist` directory.
 
 ## Contributing
 
-We welcome contributionsIf you'd like to contribute to the project, please follow these steps:
+We welcome contributions. If you'd like to contribute to the project, please follow these steps:
 
-Fork the repository
-Create a new branch: git checkout -b my-new-feature
-Make your changes and commit them: git commit -am 'Add some feature'
-Push to the branch: git push origin my-new-feature
-Submit a pull request
+- Fork the repository
+- Create a new branch: git checkout -b my-new-feature
+- Make your changes and commit them: git commit -am 'Add some feature'
+- Push to the branch: git push origin my-new-feature
+- Submit a pull request
 
 ## License
 
