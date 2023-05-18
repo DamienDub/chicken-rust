@@ -22,11 +22,11 @@ pub fn encode() -> Html {
             <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Encode" }</span>
             <hr />
             
-            <h3>{ "Encoding to..." }</h3>
+            <h3>{ "What type of encoding are we looking for ?" }</h3>
 
             <div style="text-align: center;">
                 <div>
-                    <button onclick={to_base64}>{ "UTF-8 then Base 64" }</button>
+                    <button onclick={to_base64}>{ "Base 64" }</button>
                 </div>
                 <br />
                 <div>
@@ -64,27 +64,25 @@ pub fn encode_base64() -> Html {
                     <Link<Route> to={Route::Encode}>{ "Encode" }</Link<Route>>
                     {" / Base 64" }
                 </span>
+
                 <hr />
-
-                <h3>{ "Please enter some text" }</h3>
-
-                <div style="text-align: center;">
-                    <div>
-                        <textarea id="ti" />
+                
+                <div class="io-container">
+                    <div class="io-panel io-panel-left">
+                        <h3>{ "Input text" }</h3>
+                        <textarea id="ti" style="min-height:200px" />                      
                     </div>
-
-                    <br />
-
-                    <div>
-                        <button onclick={onclick}>{ "Encode" }</button>
-                    </div>
-
-                    <br />
-
-                    <div>
-                        <textarea id="to" />
+                    <div class="io-panel io-panel-right">
+                        <h3>{ "Output text" }</h3>
+                        <textarea id="to" style="min-height:200px"/>
                     </div>
                 </div>
+
+                <br />
+                <div style="text-align: center;">
+                    <button {onclick} >{ "Encode" }</button>
+                </div> 
+
             </div>
         </main>
     }
@@ -118,24 +116,20 @@ pub fn encode_url() -> Html {
                 </span>
                 <hr />
 
-                <h3>{ "Please enter some URL" }</h3>
+                <div class="io-container">
+                    <div class="io-panel io-panel-left">
+                        <h3>{ "Input text" }</h3>
+                        <textarea id="ti" />                      
+                    </div>
+                    <div class="io-panel io-panel-right">
+                        <h3>{ "Output text" }</h3>
+                        <textarea id="to"/>
+                    </div>
+                </div>
 
+                <br />
                 <div style="text-align: center;">
-                    <div>
-                        <textarea id="ti" />
-                    </div>
-
-                    <br />
-
-                    <div>
-                        <button {onclick}>{ "Encode" }</button>
-                    </div>
-
-                    <br />
-
-                    <div>
-                        <textarea id="to" />
-                    </div>
+                    <button {onclick} >{ "Encode" }</button>
                 </div>
             </div>
         </main>
