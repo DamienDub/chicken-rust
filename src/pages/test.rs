@@ -9,6 +9,7 @@ use gloo_console::log;
 #[function_component(Test)]
 pub fn test() -> Html {
     let onclick = Callback::from(move |_: MouseEvent| {
+        let key_64 = "0011223344556677";
         let key_128 = "00112233445566778899AABBCCDDEEFF";
         let key_192 = "00112233445566778899AABBCCDDEEFF0011223344556677";
         let key_256 = "00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF";
@@ -51,6 +52,40 @@ pub fn test() -> Html {
         assert_eq!(
             sha256_hash("Hey Doc"),
             "eacbbed709035947930fd4207a7fd316a18be19bdb6308ab882270cd6dcc9db5"
+        );
+
+        // ---------------------------------------------------------------------------------------------
+
+        // DES CBC - Encryption
+        // echo -n 'Hey Doc' | openssl enc -des-cbc --base64 -K '0011223344556677' -iv '0000000000000000' -provider legacy
+        assert_eq!(
+            des_cbc_encrypt(key_64, iv_64, "Hey Doc", false).unwrap(),
+            "hdvpB45DUEI="
+        );
+
+        // DES CBC - Decryption
+        // echo 'hdvpB45DUEI=' | openssl enc -d -des-cbc --base64 -K '0011223344556677' -iv '0000000000000000' -provider legacy
+        assert_eq!(
+            des_cbc_decrypt(key_64, iv_64, "hdvpB45DUEI=", false).unwrap(),
+            "Hey Doc"
+        );
+
+        // ---------------------------------------------------------------------------------------------
+
+        // ---------------------------------------------------------------------------------------------
+
+        // DES ECB - Encryption
+        // echo -n 'Hey Doc' | openssl enc -des-ecb --base64 -K '0011223344556677' -provider legacy
+        assert_eq!(
+            des_ecb_encrypt(key_64, "Hey Doc", false).unwrap(),
+            "hdvpB45DUEI="
+        );
+
+        // DES ECB - Decryption
+        // echo 'hdvpB45DUEI=' | openssl enc -d -des-ecb --base64 -K '0011223344556677' -provider legacy
+        assert_eq!(
+            des_ecb_decrypt(key_64, "hdvpB45DUEI=", false).unwrap(),
+            "Hey Doc"
         );
 
         // ---------------------------------------------------------------------------------------------

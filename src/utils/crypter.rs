@@ -2,6 +2,105 @@ use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIni
 use base64::{engine::general_purpose, Engine as _};
 use hex;
 
+
+pub fn des_cbc_encrypt(
+    key: &str,
+    iv: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes_64 = [0x42; 8];
+    decode_hex_key_64(key, &mut key_bytes_64).unwrap();
+
+    // Get IV as bytes
+    let mut iv_bytes = [0x42; 8];
+    decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
+
+    // Copy plaintext to a buffer with a length that is a multiple of 128
+    let mut buf = get_buffer_128(plaintext);
+
+    // Encrypt
+    type DesCbcEnc = cbc::Encryptor<des::Des>;
+    match DesCbcEnc::new(&key_bytes_64.into(), &iv_bytes.into())
+        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
+    {
+        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
+        Err(_) => return Err("Failed to perform DES encryption"),
+    }
+}
+
+pub fn des_cbc_decrypt(
+    key: &str,
+    iv: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes_64 = [0x42; 8];
+    decode_hex_key_64(key, &mut key_bytes_64).unwrap();
+
+    // Get IV as bytes
+    let mut iv_bytes = [0x42; 8];
+    decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
+
+    // Get ciphertext as bytes
+    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+
+    // Decrypt
+    type DesCbcDec = cbc::Decryptor<des::Des>;
+    match DesCbcDec::new(&key_bytes_64.into(), &iv_bytes.into())
+        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
+    {
+        Ok(bytes_result) => encode_output_to_str(bytes_result),
+        Err(_) => Err("Failed to perform DES decryption"),
+    }
+}
+
+pub fn des_ecb_encrypt(
+    key: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes_64 = [0x42; 8];
+    decode_hex_key_64(key, &mut key_bytes_64).unwrap();
+
+    // Copy plaintext to a buffer with a length that is a multiple of 128
+    let mut buf = get_buffer_128(plaintext);
+
+    // Encrypt
+    type DesEcbEnc = ecb::Encryptor<des::Des>;
+    match DesEcbEnc::new(&key_bytes_64.into())
+        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
+    {
+        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
+        Err(_) => return Err("Failed to perform DES encryption"),
+    }
+}
+
+pub fn des_ecb_decrypt(
+    key: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes_64 = [0x42; 8];
+    decode_hex_key_64(key, &mut key_bytes_64).unwrap();
+
+    // Get ciphertext as bytes
+    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+
+    // Decrypt
+    type DesEcbDec = ecb::Decryptor<des::Des>;
+    match DesEcbDec::new(&key_bytes_64.into())
+        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
+    {
+        Ok(bytes_result) => encode_output_to_str(bytes_result),
+        Err(_) => Err("Failed to perform DES decryption"),
+    }
+}
+
 pub fn tripledes_keying2_cbc_encrypt(
     key: &str,
     iv: &str,
@@ -447,6 +546,16 @@ fn closest_upper_multiple_(number: usize, multiple: usize) -> usize {
     } else {
         number + multiple - remainder
     }
+}
+
+fn decode_hex_key_64(key: &str, key_bytes: &mut [u8; 8]) -> Result<(), &'static str> {
+    let result: Vec<u8> = decode_hex_key(key).unwrap();
+    if result.len() != 8 {
+        return Err("The key must be 8 bytes long");
+    }
+    key_bytes.copy_from_slice(&result);
+
+    return Ok(());
 }
 
 fn decode_hex_key_128(key: &str, key_bytes: &mut [u8; 16]) -> Result<(), &'static str> {
