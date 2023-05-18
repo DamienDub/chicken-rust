@@ -12,7 +12,8 @@ pub fn test() -> Html {
         let key_128 = "00112233445566778899AABBCCDDEEFF";
         let key_192 = "00112233445566778899AABBCCDDEEFF0011223344556677";
         let key_256 = "00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF";
-        let iv = "00000000000000000000000000000000";
+        let iv_64 = "0000000000000000";
+        let iv_128 = "00000000000000000000000000000000";
 
         // Base 64 encoding
         // echo -n "Hey Doc" | openssl enc -base64
@@ -54,45 +55,105 @@ pub fn test() -> Html {
 
         // ---------------------------------------------------------------------------------------------
 
+        // 3DES CBC - Keying option 2 - Encryption
+        // echo -n 'Hey Doc' | openssl enc -des-ede-cbc --base64 -K '00112233445566778899AABBCCDDEEFF' -iv '0000000000000000'
+        assert_eq!(
+            tripledes_keying2_cbc_encrypt(key_128, iv_64, "Hey Doc", false).unwrap(),
+            "wz6+e1DYKrA="
+        );
+
+        // 3DES CBC - Keying option 2 - Decryption
+        // echo 'wz6+e1DYKrA=' | openssl enc -d -des-ede-cbc --base64 -K '00112233445566778899AABBCCDDEEFF' -iv '0000000000000000'
+        assert_eq!(
+            tripledes_keying2_cbc_decrypt(key_128, iv_64, "wz6+e1DYKrA=", false).unwrap(),
+            "Hey Doc"
+        );
+
+        // 3DES CBC - Keying option 3 - Encryption
+        // echo -n 'Hey Doc' | openssl enc -des-ede3-cbc --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677' -iv '0000000000000000'
+        assert_eq!(
+            tripledes_keying3_cbc_encrypt(key_192, iv_64, "Hey Doc", false).unwrap(),
+            "wz6+e1DYKrA="
+        );
+
+        // 3DES CBC - Keying option 3 - Decryption
+        // echo 'wz6+e1DYKrA=' | openssl enc -d -des-ede3-cbc --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677' -iv '0000000000000000'
+        assert_eq!(
+            tripledes_keying3_cbc_decrypt(key_192, iv_64, "wz6+e1DYKrA=", false).unwrap(),
+            "Hey Doc"
+        );
+
+        // ---------------------------------------------------------------------------------------------
+
+        // 3DES ECB - Keying option 2 - Encryption
+        // echo -n 'Hey Doc' | openssl enc -des-ede-ecb --base64 -K '00112233445566778899AABBCCDDEEFF'
+        assert_eq!(
+            tripledes_keying2_ecb_encrypt(key_128, "Hey Doc", false).unwrap(),
+            "wz6+e1DYKrA="
+        );
+
+        // 3DES ECB - Keying option 2 - Decryption
+        // echo 'wz6+e1DYKrA=' | openssl enc -d -des-ede-ecb --base64 -K '00112233445566778899AABBCCDDEEFF'
+        assert_eq!(
+            tripledes_keying2_ecb_decrypt(key_128, "wz6+e1DYKrA=", false).unwrap(),
+            "Hey Doc"
+        );
+
+        // 3DES ECB - Keying option 3 - Encryption
+        // echo -n 'Hey Doc' | openssl enc -des-ede3-ecb --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677'
+        assert_eq!(
+            tripledes_keying3_ecb_encrypt(key_192, "Hey Doc", false).unwrap(),
+            "wz6+e1DYKrA="
+        );
+
+        // 3DES ECB - Keying option 3 - Decryption
+        // echo 'wz6+e1DYKrA=' | openssl enc -d -des-ede3-ecb --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677'
+        assert_eq!(
+            tripledes_keying3_ecb_decrypt(key_192, "wz6+e1DYKrA=", false).unwrap(),
+            "Hey Doc"
+        );
+
+        // ---------------------------------------------------------------------------------------------
+
         // AES CBC 128 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-128-cbc --base64 -K '00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_encrypt(128, key_128, iv, "Hey Doc", false).unwrap(),
+            aes_cbc_encrypt(128, key_128, iv_128, "Hey Doc", false).unwrap(),
             "iYb0EyQStjUulA4sfAA4jw=="
         );
 
         // AES CBC 128 decryption
         // echo 'iYb0EyQStjUulA4sfAA4jw==' | openssl enc -d -aes-128-cbc --base64 -K '00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_decrypt(128, key_128, iv, "iYb0EyQStjUulA4sfAA4jw==", false).unwrap(),
+            aes_cbc_decrypt(128, key_128, iv_128, "iYb0EyQStjUulA4sfAA4jw==", false).unwrap(),
             "Hey Doc"
         );
 
         // AES CBC 196 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-192-cbc --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_encrypt(192, key_192, iv, "Hey Doc", false).unwrap(),
+            aes_cbc_encrypt(192, key_192, iv_128, "Hey Doc", false).unwrap(),
             "3wviCl5mie4Ub4sS7X7STw=="
         );
 
         // AES CBC 192 decryption
         // echo '3wviCl5mie4Ub4sS7X7STw==' | openssl enc -d -aes-192-cbc --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_decrypt(192, key_192, iv, "3wviCl5mie4Ub4sS7X7STw==", false).unwrap(),
+            aes_cbc_decrypt(192, key_192, iv_128, "3wviCl5mie4Ub4sS7X7STw==", false).unwrap(),
             "Hey Doc"
         );
 
         // AES CBC 256 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-256-cbc --base64 -K '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_encrypt(256, key_256, iv, "Hey Doc", false).unwrap(),
+            aes_cbc_encrypt(256, key_256, iv_128, "Hey Doc", false).unwrap(),
             "1wI8/eKQIzIRSdm+eSx4kw=="
         );
 
         // AES CBC 256 decryption
         // echo '1wI8/eKQIzIRSdm+eSx4kw==' | openssl enc -d -aes-256-cbc --base64 -K '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_decrypt(256, key_256, iv, "1wI8/eKQIzIRSdm+eSx4kw==", false).unwrap(),
+            aes_cbc_decrypt(256, key_256, iv_128, "1wI8/eKQIzIRSdm+eSx4kw==", false).unwrap(),
             "Hey Doc"
         );
 
