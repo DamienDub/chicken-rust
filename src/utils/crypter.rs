@@ -1,7 +1,13 @@
-use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyInit, KeyIvInit};
+use aes::{Aes128, Aes192, Aes256};
 use base64::{engine::general_purpose, Engine as _};
+use block_padding::Pkcs7;
+use cbc::Decryptor as CbcDecryptor;
+use cbc::Encryptor as CbcEncryptor;
+use cipher::{BlockCipher, BlockDecryptMut, BlockEncryptMut, KeyInit, KeyIvInit};
+use des::{Des, TdesEde2, TdesEde3};
+use ecb::Decryptor as EcbDecryptor;
+use ecb::Encryptor as EcbEncryptor;
 use hex;
-
 
 pub fn des_cbc_encrypt(
     key: &str,
@@ -18,16 +24,11 @@ pub fn des_cbc_encrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer: Vec<u8> = get_buffer_128(plaintext);
 
     // Encrypt
-    type DesCbcEnc = cbc::Encryptor<des::Des>;
-    match DesCbcEnc::new(&key_bytes_64.into(), &iv_bytes.into())
-        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-    {
-        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-        Err(_) => return Err("Failed to perform DES encryption"),
-    }
+    let cipher = CbcEncryptor::<Des>::new(&key_bytes_64.into(), &iv_bytes.into());
+    return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
 }
 
 pub fn des_cbc_decrypt(
@@ -45,16 +46,11 @@ pub fn des_cbc_decrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+    let buffer = decode_input(ciphertext, hex_input).unwrap();
 
     // Decrypt
-    type DesCbcDec = cbc::Decryptor<des::Des>;
-    match DesCbcDec::new(&key_bytes_64.into(), &iv_bytes.into())
-        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-    {
-        Ok(bytes_result) => encode_output_to_str(bytes_result),
-        Err(_) => Err("Failed to perform DES decryption"),
-    }
+    let cipher = CbcDecryptor::<Des>::new(&key_bytes_64.into(), &iv_bytes.into());
+    return cbc_decrypt(cipher, buffer);
 }
 
 pub fn des_ecb_encrypt(
@@ -67,16 +63,11 @@ pub fn des_ecb_encrypt(
     decode_hex_key_64(key, &mut key_bytes_64).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer = get_buffer_128(plaintext);
 
     // Encrypt
-    type DesEcbEnc = ecb::Encryptor<des::Des>;
-    match DesEcbEnc::new(&key_bytes_64.into())
-        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-    {
-        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-        Err(_) => return Err("Failed to perform DES encryption"),
-    }
+    let cipher = EcbEncryptor::<Des>::new(&key_bytes_64.into());
+    return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
 }
 
 pub fn des_ecb_decrypt(
@@ -89,16 +80,11 @@ pub fn des_ecb_decrypt(
     decode_hex_key_64(key, &mut key_bytes_64).unwrap();
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+    let buffer = decode_input(ciphertext, hex_input).unwrap();
 
     // Decrypt
-    type DesEcbDec = ecb::Decryptor<des::Des>;
-    match DesEcbDec::new(&key_bytes_64.into())
-        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-    {
-        Ok(bytes_result) => encode_output_to_str(bytes_result),
-        Err(_) => Err("Failed to perform DES decryption"),
-    }
+    let cipher = EcbDecryptor::<Des>::new(&key_bytes_64.into());
+    return ecb_decrypt(cipher, buffer);
 }
 
 pub fn tripledes_keying2_cbc_encrypt(
@@ -116,16 +102,11 @@ pub fn tripledes_keying2_cbc_encrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer = get_buffer_128(plaintext);
 
     // Encrypt
-    type TdesCbcEnc = cbc::Encryptor<des::TdesEde2>;
-    match TdesCbcEnc::new(&key_bytes_128.into(), &iv_bytes.into())
-        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-    {
-        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-        Err(_) => return Err("Failed to perform 3-DES encryption"),
-    }
+    let cipher = CbcEncryptor::<TdesEde2>::new(&key_bytes_128.into(), &iv_bytes.into());
+    return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying2_cbc_decrypt(
@@ -143,16 +124,11 @@ pub fn tripledes_keying2_cbc_decrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+    let buffer = decode_input(ciphertext, hex_input).unwrap();
 
     // Decrypt
-    type TdesCbcDec = cbc::Decryptor<des::TdesEde2>;
-    match TdesCbcDec::new(&key_bytes_128.into(), &iv_bytes.into())
-        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-    {
-        Ok(bytes_result) => encode_output_to_str(bytes_result),
-        Err(_) => Err("Failed to perform 3-DES decryption"),
-    }
+    let cipher = CbcDecryptor::<TdesEde2>::new(&key_bytes_128.into(), &iv_bytes.into());
+    return cbc_decrypt(cipher, buffer);
 }
 
 pub fn tripledes_keying3_cbc_encrypt(
@@ -170,16 +146,11 @@ pub fn tripledes_keying3_cbc_encrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer = get_buffer_128(plaintext);
 
     // Encrypt
-    type TdesCbcEnc = cbc::Encryptor<des::TdesEde3>;
-    match TdesCbcEnc::new(&key_bytes_192.into(), &iv_bytes.into())
-        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-    {
-        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-        Err(_) => return Err("Failed to perform 3-DES encryption"),
-    }
+    let cipher = CbcEncryptor::<TdesEde3>::new(&key_bytes_192.into(), &iv_bytes.into());
+    return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying3_cbc_decrypt(
@@ -197,16 +168,11 @@ pub fn tripledes_keying3_cbc_decrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+    let buffer = decode_input(ciphertext, hex_input).unwrap();
 
     // Decrypt
-    type TdesCbcDec = cbc::Decryptor<des::TdesEde3>;
-    match TdesCbcDec::new(&key_bytes_192.into(), &iv_bytes.into())
-        .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-    {
-        Ok(bytes_result) => encode_output_to_str(bytes_result),
-        Err(_) => Err("Failed to perform 3-DES decryption"),
-    }
+    let cipher = CbcDecryptor::<TdesEde3>::new(&key_bytes_192.into(), &iv_bytes.into());
+    return cbc_decrypt(cipher, buffer);
 }
 
 pub fn tripledes_keying2_ecb_encrypt(
@@ -219,16 +185,11 @@ pub fn tripledes_keying2_ecb_encrypt(
     decode_hex_key_128(key, &mut key_bytes_128).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer = get_buffer_128(plaintext);
 
     // Encrypt
-    type TdesEcbEnc = ecb::Encryptor<des::TdesEde2>;
-    match TdesEcbEnc::new(&key_bytes_128.into())
-        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-    {
-        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-        Err(_) => return Err("Failed to perform 3-DES encryption"),
-    }
+    let cipher = EcbEncryptor::<TdesEde2>::new(&key_bytes_128.into());
+    return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying2_ecb_decrypt(
@@ -241,15 +202,11 @@ pub fn tripledes_keying2_ecb_decrypt(
     decode_hex_key_128(key, &mut key_bytes_128).unwrap();
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+    let buffer = decode_input(ciphertext, hex_input).unwrap();
 
     // Decrypt
-    type TdesEcbDec = ecb::Decryptor<des::TdesEde2>;
-    match TdesEcbDec::new(&key_bytes_128.into()).decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-    {
-        Ok(bytes_result) => encode_output_to_str(bytes_result),
-        Err(_) => Err("Failed to perform 3-DES decryption"),
-    }
+    let cipher = EcbDecryptor::<TdesEde2>::new(&key_bytes_128.into());
+    return ecb_decrypt(cipher, buffer);
 }
 
 pub fn tripledes_keying3_ecb_encrypt(
@@ -262,16 +219,11 @@ pub fn tripledes_keying3_ecb_encrypt(
     decode_hex_key_192(key, &mut key_bytes_192).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer = get_buffer_128(plaintext);
 
     // Encrypt
-    type TdesEcbEnc = ecb::Encryptor<des::TdesEde3>;
-    match TdesEcbEnc::new(&key_bytes_192.into())
-        .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-    {
-        Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-        Err(_) => return Err("Failed to perform 3-DES encryption"),
-    }
+    let cipher = EcbEncryptor::<TdesEde3>::new(&key_bytes_192.into());
+    return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying3_ecb_decrypt(
@@ -284,15 +236,11 @@ pub fn tripledes_keying3_ecb_decrypt(
     decode_hex_key_192(key, &mut key_bytes_192).unwrap();
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes = decode_input(ciphertext, hex_input).unwrap();
+    let buffer = decode_input(ciphertext, hex_input).unwrap();
 
     // Decrypt
-    type TdesEcbDec = ecb::Decryptor<des::TdesEde3>;
-    match TdesEcbDec::new(&key_bytes_192.into()).decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-    {
-        Ok(bytes_result) => encode_output_to_str(bytes_result),
-        Err(_) => Err("Failed to perform 3-DES decryption"),
-    }
+    let cipher = EcbDecryptor::<TdesEde3>::new(&key_bytes_192.into());
+    return ecb_decrypt(cipher, buffer);
 }
 
 pub fn aes_cbc_encrypt(
@@ -318,36 +266,21 @@ pub fn aes_cbc_encrypt(
     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer = get_buffer_128(plaintext);
 
     // Encrypt
     match key_size {
         128 => {
-            type Aes128CbcEnc = cbc::Encryptor<aes::Aes128>;
-            match Aes128CbcEnc::new(&key_bytes_128.into(), &iv_bytes.into())
-                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-            {
-                Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-                Err(_) => return Err("Failed to perform AES-128 encryption"),
-            }
+            let cipher = CbcEncryptor::<Aes128>::new(&key_bytes_128.into(), &iv_bytes.into());
+            return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
         }
         192 => {
-            type Aes192CbcEnc = cbc::Encryptor<aes::Aes192>;
-            match Aes192CbcEnc::new(&key_bytes_192.into(), &iv_bytes.into())
-                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-            {
-                Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-                Err(_) => return Err("Failed to perform AES-192 encryption"),
-            }
+            let cipher = CbcEncryptor::<Aes192>::new(&key_bytes_192.into(), &iv_bytes.into());
+            return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
         }
         256 => {
-            type Aes256CbcEnc = cbc::Encryptor<aes::Aes256>;
-            match Aes256CbcEnc::new(&key_bytes_256.into(), &iv_bytes.into())
-                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-            {
-                Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-                Err(_) => return Err("Failed to perform AES-256 encryption"),
-            }
+            let cipher = CbcEncryptor::<Aes256>::new(&key_bytes_256.into(), &iv_bytes.into());
+            return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
         }
         _ => return Err("The key size must be 128, 192, or 256"),
     };
@@ -376,15 +309,15 @@ pub fn aes_cbc_decrypt(
     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes: Vec<u8>;
+    let buffer: Vec<u8>;
     if hex_input {
         match hex::decode(ciphertext) {
-            Ok(bytes_result) => ciphertext_bytes = bytes_result,
+            Ok(bytes_result) => buffer = bytes_result,
             Err(_) => return Err("The ciphertext is not an hexadecimal string"),
         }
     } else {
         match general_purpose::STANDARD.decode(ciphertext) {
-            Ok(bytes_result) => ciphertext_bytes = bytes_result,
+            Ok(bytes_result) => buffer = bytes_result,
             Err(_) => return Err("The ciphertext is not a base 64 string"),
         }
     }
@@ -392,31 +325,16 @@ pub fn aes_cbc_decrypt(
     // Decrypt
     match key_size {
         128 => {
-            type Aes128CbcDec = cbc::Decryptor<aes::Aes128>;
-            match Aes128CbcDec::new(&key_bytes_128.into(), &iv_bytes.into())
-                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-            {
-                Ok(bytes_result) => encode_output_to_str(bytes_result),
-                Err(_) => Err("Failed to perform AES-128 decryption"),
-            }
+            let cipher = CbcDecryptor::<Aes128>::new(&key_bytes_128.into(), &iv_bytes.into());
+            return cbc_decrypt(cipher, buffer);
         }
         192 => {
-            type Aes192CbcDec = cbc::Decryptor<aes::Aes192>;
-            match Aes192CbcDec::new(&key_bytes_192.into(), &iv_bytes.into())
-                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-            {
-                Ok(bytes_result) => encode_output_to_str(bytes_result),
-                Err(_) => Err("Failed to perform AES-192 decryption"),
-            }
+            let cipher = CbcDecryptor::<Aes192>::new(&key_bytes_192.into(), &iv_bytes.into());
+            return cbc_decrypt(cipher, buffer);
         }
         256 => {
-            type Aes256CbcDec = cbc::Decryptor<aes::Aes256>;
-            match Aes256CbcDec::new(&key_bytes_256.into(), &iv_bytes.into())
-                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-            {
-                Ok(bytes_result) => encode_output_to_str(bytes_result),
-                Err(_) => Err("Failed to perform AES-256 decryption"),
-            }
+            let cipher = CbcDecryptor::<Aes256>::new(&key_bytes_256.into(), &iv_bytes.into());
+            return cbc_decrypt(cipher, buffer);
         }
         _ => return Err("The key size must be 128, 192, or 256"),
     }
@@ -440,36 +358,21 @@ pub fn aes_ecb_encrypt(
     }
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let mut buf = get_buffer_128(plaintext);
+    let buffer = get_buffer_128(plaintext);
 
     // Encrypt
     match key_size {
         128 => {
-            type Aes128EcbEnc = ecb::Encryptor<aes::Aes128>;
-            match Aes128EcbEnc::new(&key_bytes_128.into())
-                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-            {
-                Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-                Err(_) => return Err("Failed to perform AES-128 encryption"),
-            }
+            let cipher = EcbEncryptor::<Aes128>::new(&key_bytes_128.into());
+            return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
         }
         192 => {
-            type Aes192EcbEnc = ecb::Encryptor<aes::Aes192>;
-            match Aes192EcbEnc::new(&key_bytes_192.into())
-                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-            {
-                Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-                Err(_) => return Err("Failed to perform AES-192 encryption"),
-            }
+            let cipher = EcbEncryptor::<Aes192>::new(&key_bytes_192.into());
+            return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
         }
         256 => {
-            type Aes256EcbEnc = ecb::Encryptor<aes::Aes256>;
-            match Aes256EcbEnc::new(&key_bytes_256.into())
-                .encrypt_padded_mut::<Pkcs7>(&mut buf, plaintext.len())
-            {
-                Ok(result) => return Ok(encode_output_to_hex(result, hex_output)),
-                Err(_) => return Err("Failed to perform AES-256 encryption"),
-            }
+            let cipher = EcbEncryptor::<Aes256>::new(&key_bytes_256.into());
+            return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
         }
         _ => return Err("The key size must be 128, 192, or 256"),
     };
@@ -493,15 +396,15 @@ pub fn aes_ecb_decrypt(
     }
 
     // Get ciphertext as bytes
-    let mut ciphertext_bytes: Vec<u8>;
+    let buffer: Vec<u8>;
     if hex_input {
         match hex::decode(ciphertext) {
-            Ok(bytes_result) => ciphertext_bytes = bytes_result,
+            Ok(bytes_result) => buffer = bytes_result,
             Err(_) => return Err("The ciphertext is not an hexadecimal string"),
         }
     } else {
         match general_purpose::STANDARD.decode(ciphertext) {
-            Ok(bytes_result) => ciphertext_bytes = bytes_result,
+            Ok(bytes_result) => buffer = bytes_result,
             Err(_) => return Err("The ciphertext is not a base 64 string"),
         }
     }
@@ -509,31 +412,16 @@ pub fn aes_ecb_decrypt(
     // Decrypt
     match key_size {
         128 => {
-            type Aes128EcbDec = ecb::Decryptor<aes::Aes128>;
-            match Aes128EcbDec::new(&key_bytes_128.into())
-                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-            {
-                Ok(bytes_result) => encode_output_to_str(bytes_result),
-                Err(_) => Err("Failed to perform AES-128 decryption"),
-            }
+            let cipher = EcbDecryptor::<Aes128>::new(&key_bytes_128.into());
+            return ecb_decrypt(cipher, buffer);
         }
         192 => {
-            type Aes192EcbDec = ecb::Decryptor<aes::Aes192>;
-            match Aes192EcbDec::new(&key_bytes_192.into())
-                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-            {
-                Ok(bytes_result) => encode_output_to_str(bytes_result),
-                Err(_) => Err("Failed to perform AES-192 decryption"),
-            }
+            let cipher = EcbDecryptor::<Aes192>::new(&key_bytes_192.into());
+            return ecb_decrypt(cipher, buffer);
         }
         256 => {
-            type Aes256EcbDec = ecb::Decryptor<aes::Aes256>;
-            match Aes256EcbDec::new(&key_bytes_256.into())
-                .decrypt_padded_mut::<Pkcs7>(&mut ciphertext_bytes)
-            {
-                Ok(bytes_result) => encode_output_to_str(bytes_result),
-                Err(_) => Err("Failed to perform AES-256 decryption"),
-            }
+            let cipher = EcbDecryptor::<Aes256>::new(&key_bytes_256.into());
+            return ecb_decrypt(cipher, buffer);
         }
         _ => return Err("The key size must be 128, 192, or 256"),
     }
@@ -647,7 +535,51 @@ fn decode_input(input: &str, hex_input: bool) -> Result<Vec<u8>, &'static str> {
     }
 }
 
-fn encode_output_to_hex(output: &[u8], hex_output: bool) -> String {
+fn cbc_encrypt<C: BlockEncryptMut + BlockCipher>(
+    cipher: CbcEncryptor<C>,
+    mut buffer: Vec<u8>,
+    length: usize,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    match cipher.encrypt_padded_mut::<Pkcs7>(&mut buffer, length) {
+        Ok(result) => return Ok(encode_output(result, hex_output)),
+        Err(_) => return Err("Failed to perform CBC encryption"),
+    }
+}
+
+fn cbc_decrypt<C: BlockDecryptMut + BlockCipher>(
+    cipher: CbcDecryptor<C>,
+    mut buffer: Vec<u8>
+) -> Result<String, &'static str> {
+    match cipher.decrypt_padded_mut::<Pkcs7>(&mut buffer) {
+        Ok(bytes_result) => encode_output_to_str(bytes_result),
+        Err(_) => Err("Failed to perform CBC decryption"),
+    }
+}
+
+fn ecb_encrypt<C: BlockEncryptMut + BlockCipher>(
+    cipher: EcbEncryptor<C>,
+    mut buffer: Vec<u8>,
+    length: usize,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    match cipher.encrypt_padded_mut::<Pkcs7>(&mut buffer, length) {
+        Ok(result) => return Ok(encode_output(result, hex_output)),
+        Err(_) => return Err("Failed to perform ECB encryption"),
+    }
+}
+
+fn ecb_decrypt<C: BlockDecryptMut + BlockCipher>(
+    cipher: EcbDecryptor<C>,
+    mut buffer: Vec<u8>
+) -> Result<String, &'static str> {
+    match cipher.decrypt_padded_mut::<Pkcs7>(&mut buffer) {
+        Ok(bytes_result) => encode_output_to_str(bytes_result),
+        Err(_) => Err("Failed to perform ECB decryption"),
+    }
+}
+
+fn encode_output(output: &[u8], hex_output: bool) -> String {
     if hex_output {
         return hex::encode(&output);
     } else {
