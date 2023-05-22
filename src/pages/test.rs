@@ -40,6 +40,13 @@ pub fn test() -> Html {
 
         // ---------------------------------------------------------------------------------------------
 
+        // MD5
+        // echo -n "Hey Doc" | openssl md5
+        assert_eq!(
+            md5_hash("Hey Doc"),
+            "8fe916535abcbd8fafc80bc25b2da127"
+        );
+
         // SHA-1
         // echo -n "Hey Doc" | openssl sha1
         assert_eq!(
