@@ -24,7 +24,7 @@ pub fn des_cbc_encrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer: Vec<u8> = get_buffer_128(plaintext);
+    let buffer: Vec<u8> = get_buffer(plaintext);
 
     // Encrypt
     let cipher = CbcEncryptor::<Des>::new(&key_bytes_64.into(), &iv_bytes.into());
@@ -63,7 +63,7 @@ pub fn des_ecb_encrypt(
     decode_hex_key_64(key, &mut key_bytes_64).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer_128(plaintext);
+    let buffer = get_buffer(plaintext);
 
     // Encrypt
     let cipher = EcbEncryptor::<Des>::new(&key_bytes_64.into());
@@ -102,7 +102,7 @@ pub fn tripledes_keying2_cbc_encrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer_128(plaintext);
+    let buffer = get_buffer(plaintext);
 
     // Encrypt
     let cipher = CbcEncryptor::<TdesEde2>::new(&key_bytes_128.into(), &iv_bytes.into());
@@ -146,7 +146,7 @@ pub fn tripledes_keying3_cbc_encrypt(
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer_128(plaintext);
+    let buffer = get_buffer(plaintext);
 
     // Encrypt
     let cipher = CbcEncryptor::<TdesEde3>::new(&key_bytes_192.into(), &iv_bytes.into());
@@ -185,7 +185,7 @@ pub fn tripledes_keying2_ecb_encrypt(
     decode_hex_key_128(key, &mut key_bytes_128).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer_128(plaintext);
+    let buffer = get_buffer(plaintext);
 
     // Encrypt
     let cipher = EcbEncryptor::<TdesEde2>::new(&key_bytes_128.into());
@@ -219,7 +219,7 @@ pub fn tripledes_keying3_ecb_encrypt(
     decode_hex_key_192(key, &mut key_bytes_192).unwrap();
 
     // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer_128(plaintext);
+    let buffer = get_buffer(plaintext);
 
     // Encrypt
     let cipher = EcbEncryptor::<TdesEde3>::new(&key_bytes_192.into());
@@ -243,188 +243,203 @@ pub fn tripledes_keying3_ecb_decrypt(
     return ecb_decrypt(cipher, buffer);
 }
 
-pub fn aes_cbc_encrypt(
-    key_size: usize,
+pub fn aes_128_cbc_encrypt(
     key: &str,
     iv: &str,
     plaintext: &str,
     hex_output: bool,
 ) -> Result<String, &'static str> {
     // Get key as bytes
-    let mut key_bytes_128 = [0x42; 16];
-    let mut key_bytes_192 = [0x42; 24];
-    let mut key_bytes_256 = [0x42; 32];
-    match key_size {
-        128 => decode_hex_key_128(key, &mut key_bytes_128).unwrap(),
-        192 => decode_hex_key_192(key, &mut key_bytes_192).unwrap(),
-        256 => decode_hex_key_256(key, &mut key_bytes_256).unwrap(),
-        _ => return Err("The key size must be 128, 192, or 256"),
-    }
+    let mut key_bytes = [0x42; 16];
+    decode_hex_key_128(key, &mut key_bytes).unwrap();
 
-    // Get IV as bytes
-    let mut iv_bytes = [0x42; 16];
-    decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
-
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer_128(plaintext);
+     // Get IV as bytes
+     let mut iv_bytes = [0x42; 16];
+     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
     // Encrypt
-    match key_size {
-        128 => {
-            let cipher = CbcEncryptor::<Aes128>::new(&key_bytes_128.into(), &iv_bytes.into());
-            return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
-        }
-        192 => {
-            let cipher = CbcEncryptor::<Aes192>::new(&key_bytes_192.into(), &iv_bytes.into());
-            return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
-        }
-        256 => {
-            let cipher = CbcEncryptor::<Aes256>::new(&key_bytes_256.into(), &iv_bytes.into());
-            return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
-        }
-        _ => return Err("The key size must be 128, 192, or 256"),
-    };
+    let cipher = CbcEncryptor::<Aes128>::new(&key_bytes.into(),&iv_bytes.into());
+    return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
-pub fn aes_cbc_decrypt(
-    key_size: usize,
+
+pub fn aes_192_cbc_encrypt(
     key: &str,
+    iv: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 24];
+    decode_hex_key_192(key, &mut key_bytes).unwrap();
+
+     // Get IV as bytes
+     let mut iv_bytes = [0x42; 16];
+     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+
+    // Encrypt
+    let cipher = CbcEncryptor::<Aes192>::new(&key_bytes.into(),&iv_bytes.into());
+    return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
+}
+
+pub fn aes_256_cbc_encrypt(
+    key: &str,
+    iv: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 32];
+    decode_hex_key_256(key, &mut key_bytes).unwrap();
+
+     // Get IV as bytes
+     let mut iv_bytes = [0x42; 16];
+     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+
+    // Encrypt
+    let cipher = CbcEncryptor::<Aes256>::new(&key_bytes.into(),&iv_bytes.into());
+    return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
+}
+
+pub fn aes_128_cbc_decrypt(
+   key: &str,
     iv: &str,
     ciphertext: &str,
     hex_input: bool,
 ) -> Result<String, &'static str> {
     // Get key as bytes
-    let mut key_bytes_128 = [0x42; 16];
-    let mut key_bytes_192 = [0x42; 24];
-    let mut key_bytes_256 = [0x42; 32];
-    match key_size {
-        128 => decode_hex_key_128(key, &mut key_bytes_128).unwrap(),
-        192 => decode_hex_key_192(key, &mut key_bytes_192).unwrap(),
-        256 => decode_hex_key_256(key, &mut key_bytes_256).unwrap(),
-        _ => return Err("The key size must be 128, 192, or 256"),
-    }
-
+    let mut key_bytes = [0x42; 16];
+    decode_hex_key_128(key, &mut key_bytes).unwrap();
+        
     // Get IV as bytes
     let mut iv_bytes = [0x42; 16];
     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
-    // Get ciphertext as bytes
-    let buffer: Vec<u8>;
-    if hex_input {
-        match hex::decode(ciphertext) {
-            Ok(bytes_result) => buffer = bytes_result,
-            Err(_) => return Err("The ciphertext is not an hexadecimal string"),
-        }
-    } else {
-        match general_purpose::STANDARD.decode(ciphertext) {
-            Ok(bytes_result) => buffer = bytes_result,
-            Err(_) => return Err("The ciphertext is not a base 64 string"),
-        }
-    }
-
     // Decrypt
-    match key_size {
-        128 => {
-            let cipher = CbcDecryptor::<Aes128>::new(&key_bytes_128.into(), &iv_bytes.into());
-            return cbc_decrypt(cipher, buffer);
-        }
-        192 => {
-            let cipher = CbcDecryptor::<Aes192>::new(&key_bytes_192.into(), &iv_bytes.into());
-            return cbc_decrypt(cipher, buffer);
-        }
-        256 => {
-            let cipher = CbcDecryptor::<Aes256>::new(&key_bytes_256.into(), &iv_bytes.into());
-            return cbc_decrypt(cipher, buffer);
-        }
-        _ => return Err("The key size must be 128, 192, or 256"),
-    }
+    let cipher = CbcDecryptor::<Aes128>::new(&key_bytes.into(), &iv_bytes.into());
+            return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
-pub fn aes_ecb_encrypt(
-    key_size: usize,
+pub fn aes_192_cbc_decrypt(
+    key: &str,
+     iv: &str,
+     ciphertext: &str,
+     hex_input: bool,
+ ) -> Result<String, &'static str> {
+     // Get key as bytes
+     let mut key_bytes = [0x42; 24];
+     decode_hex_key_192(key, &mut key_bytes).unwrap();
+         
+     // Get IV as bytes
+     let mut iv_bytes = [0x42; 16];
+     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+ 
+     // Decrypt
+     let cipher = CbcDecryptor::<Aes192>::new(&key_bytes.into(), &iv_bytes.into());
+             return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
+ }
+
+ pub fn aes_256_cbc_decrypt(
+    key: &str,
+     iv: &str,
+     ciphertext: &str,
+     hex_input: bool,
+ ) -> Result<String, &'static str> {
+     // Get key as bytes
+     let mut key_bytes = [0x42; 32];
+     decode_hex_key_256(key, &mut key_bytes).unwrap();
+         
+     // Get IV as bytes
+     let mut iv_bytes = [0x42; 16];
+     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+ 
+     // Decrypt
+     let cipher = CbcDecryptor::<Aes256>::new(&key_bytes.into(), &iv_bytes.into());
+             return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
+ }
+
+pub fn aes_128_ecb_encrypt(
     key: &str,
     plaintext: &str,
     hex_output: bool,
 ) -> Result<String, &'static str> {
     // Get key as bytes
-    let mut key_bytes_128 = [0x42; 16];
-    let mut key_bytes_192 = [0x42; 24];
-    let mut key_bytes_256 = [0x42; 32];
-    match key_size {
-        128 => decode_hex_key_128(key, &mut key_bytes_128).unwrap(),
-        192 => decode_hex_key_192(key, &mut key_bytes_192).unwrap(),
-        256 => decode_hex_key_256(key, &mut key_bytes_256).unwrap(),
-        _ => return Err("The key size must be 128, 192, or 256"),
-    }
-
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer_128(plaintext);
+    let mut key_bytes = [0x42; 16];
+    decode_hex_key_128(key, &mut key_bytes).unwrap();
 
     // Encrypt
-    match key_size {
-        128 => {
-            let cipher = EcbEncryptor::<Aes128>::new(&key_bytes_128.into());
-            return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
-        }
-        192 => {
-            let cipher = EcbEncryptor::<Aes192>::new(&key_bytes_192.into());
-            return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
-        }
-        256 => {
-            let cipher = EcbEncryptor::<Aes256>::new(&key_bytes_256.into());
-            return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
-        }
-        _ => return Err("The key size must be 128, 192, or 256"),
-    };
+    let cipher = EcbEncryptor::<Aes128>::new(&key_bytes.into());
+    return ecb_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
-pub fn aes_ecb_decrypt(
-    key_size: usize,
+pub fn aes_192_ecb_encrypt(
+    key: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 24];
+    decode_hex_key_192(key, &mut key_bytes).unwrap();
+
+    // Encrypt
+    let cipher = EcbEncryptor::<Aes192>::new(&key_bytes.into());
+    return ecb_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
+}
+
+pub fn aes_256_ecb_encrypt(
+    key: &str,
+    plaintext: &str,
+    hex_output: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 32];
+    decode_hex_key_256(key, &mut key_bytes).unwrap();
+
+    // Encrypt
+    let cipher = EcbEncryptor::<Aes256>::new(&key_bytes.into());
+    return ecb_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
+}
+
+pub fn aes_128_ecb_decrypt(
     key: &str,
     ciphertext: &str,
     hex_input: bool,
 ) -> Result<String, &'static str> {
     // Get key as bytes
-    let mut key_bytes_128 = [0x42; 16];
-    let mut key_bytes_192 = [0x42; 24];
-    let mut key_bytes_256 = [0x42; 32];
-    match key_size {
-        128 => decode_hex_key_128(key, &mut key_bytes_128).unwrap(),
-        192 => decode_hex_key_192(key, &mut key_bytes_192).unwrap(),
-        256 => decode_hex_key_256(key, &mut key_bytes_256).unwrap(),
-        _ => return Err("The key size must be 128, 192, or 256"),
-    }
-
-    // Get ciphertext as bytes
-    let buffer: Vec<u8>;
-    if hex_input {
-        match hex::decode(ciphertext) {
-            Ok(bytes_result) => buffer = bytes_result,
-            Err(_) => return Err("The ciphertext is not an hexadecimal string"),
-        }
-    } else {
-        match general_purpose::STANDARD.decode(ciphertext) {
-            Ok(bytes_result) => buffer = bytes_result,
-            Err(_) => return Err("The ciphertext is not a base 64 string"),
-        }
-    }
+    let mut key_bytes = [0x42; 16];
+    decode_hex_key_128(key, &mut key_bytes).unwrap();
 
     // Decrypt
-    match key_size {
-        128 => {
-            let cipher = EcbDecryptor::<Aes128>::new(&key_bytes_128.into());
-            return ecb_decrypt(cipher, buffer);
-        }
-        192 => {
-            let cipher = EcbDecryptor::<Aes192>::new(&key_bytes_192.into());
-            return ecb_decrypt(cipher, buffer);
-        }
-        256 => {
-            let cipher = EcbDecryptor::<Aes256>::new(&key_bytes_256.into());
-            return ecb_decrypt(cipher, buffer);
-        }
-        _ => return Err("The key size must be 128, 192, or 256"),
-    }
+    let cipher = EcbDecryptor::<Aes128>::new(&key_bytes.into());
+    return ecb_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
+}
+
+pub fn aes_192_ecb_decrypt(
+    key: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 24];
+    decode_hex_key_192(key, &mut key_bytes).unwrap();
+
+    // Decrypt
+    let cipher = EcbDecryptor::<Aes192>::new(&key_bytes.into());
+    return ecb_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
+}
+
+pub fn aes_256_ecb_decrypt(
+    key: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 32];
+    decode_hex_key_256(key, &mut key_bytes).unwrap();
+
+    // Decrypt
+    let cipher = EcbDecryptor::<Aes256>::new(&key_bytes.into());
+    return ecb_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
 fn closest_upper_multiple_(number: usize, multiple: usize) -> usize {
@@ -514,7 +529,8 @@ fn decode_hex_iv(key: &str) -> Result<Vec<u8>, &'static str> {
     }
 }
 
-fn get_buffer_128(plaintext: &str) -> Vec<u8> {
+// Copy plaintext to a buffer with a length that is a multiple of 128
+fn get_buffer(plaintext: &str) -> Vec<u8> {
     let plaintext_len = plaintext.len();
     let mut buf = vec![0u8; closest_upper_multiple_(plaintext_len, 128)];
     buf[..plaintext_len].copy_from_slice(&plaintext.as_bytes());
@@ -549,7 +565,7 @@ fn cbc_encrypt<C: BlockEncryptMut + BlockCipher>(
 
 fn cbc_decrypt<C: BlockDecryptMut + BlockCipher>(
     cipher: CbcDecryptor<C>,
-    mut buffer: Vec<u8>
+    mut buffer: Vec<u8>,
 ) -> Result<String, &'static str> {
     match cipher.decrypt_padded_mut::<Pkcs7>(&mut buffer) {
         Ok(bytes_result) => encode_output_to_str(bytes_result),
@@ -571,7 +587,7 @@ fn ecb_encrypt<C: BlockEncryptMut + BlockCipher>(
 
 fn ecb_decrypt<C: BlockDecryptMut + BlockCipher>(
     cipher: EcbDecryptor<C>,
-    mut buffer: Vec<u8>
+    mut buffer: Vec<u8>,
 ) -> Result<String, &'static str> {
     match cipher.decrypt_padded_mut::<Pkcs7>(&mut buffer) {
         Ok(bytes_result) => encode_output_to_str(bytes_result),

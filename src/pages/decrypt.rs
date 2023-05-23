@@ -46,11 +46,11 @@ pub fn decrypt_aes() -> Html {
         let to_textarea = get_textarea_element(&document, "to");
 
         match mode.as_str() {
-            "cbc" => match aes_cbc_decrypt(128, key.as_str(), iv.as_str(), ti.as_str(), is_hex) {
+            "cbc" => match aes_128_cbc_decrypt(key.as_str(), iv.as_str(), ti.as_str(), is_hex) {
                 Ok(result) => to_textarea.set_value(result.as_str()),
                 Err(error) => to_textarea.set_value(error),
             },
-            "ecb" => match aes_ecb_decrypt(128, key.as_str(), ti.as_str(), is_hex) {
+            "ecb" => match aes_128_ecb_decrypt(key.as_str(), ti.as_str(), is_hex) {
                 Ok(result) => to_textarea.set_value(result.as_str()),
                 Err(error) => to_textarea.set_value(error),
             },

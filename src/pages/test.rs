@@ -42,10 +42,7 @@ pub fn test() -> Html {
 
         // MD5
         // echo -n "Hey Doc" | openssl md5
-        assert_eq!(
-            md5_hash("Hey Doc"),
-            "8fe916535abcbd8fafc80bc25b2da127"
-        );
+        assert_eq!(md5_hash("Hey Doc"), "8fe916535abcbd8fafc80bc25b2da127");
 
         // SHA-1
         // echo -n "Hey Doc" | openssl sha1
@@ -76,8 +73,6 @@ pub fn test() -> Html {
             des_cbc_decrypt(key_64, iv_64, "hdvpB45DUEI=", false).unwrap(),
             "Hey Doc"
         );
-
-        // ---------------------------------------------------------------------------------------------
 
         // ---------------------------------------------------------------------------------------------
 
@@ -160,42 +155,42 @@ pub fn test() -> Html {
         // AES CBC 128 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-128-cbc --base64 -K '00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_encrypt(128, key_128, iv_128, "Hey Doc", false).unwrap(),
+            aes_128_cbc_encrypt(key_128, iv_128, "Hey Doc", false).unwrap(),
             "iYb0EyQStjUulA4sfAA4jw=="
         );
 
         // AES CBC 128 decryption
         // echo 'iYb0EyQStjUulA4sfAA4jw==' | openssl enc -d -aes-128-cbc --base64 -K '00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_decrypt(128, key_128, iv_128, "iYb0EyQStjUulA4sfAA4jw==", false).unwrap(),
+            aes_128_cbc_decrypt(key_128, iv_128, "iYb0EyQStjUulA4sfAA4jw==", false).unwrap(),
             "Hey Doc"
         );
 
         // AES CBC 196 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-192-cbc --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_encrypt(192, key_192, iv_128, "Hey Doc", false).unwrap(),
+            aes_192_cbc_encrypt(key_192, iv_128, "Hey Doc", false).unwrap(),
             "3wviCl5mie4Ub4sS7X7STw=="
         );
 
         // AES CBC 192 decryption
         // echo '3wviCl5mie4Ub4sS7X7STw==' | openssl enc -d -aes-192-cbc --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_decrypt(192, key_192, iv_128, "3wviCl5mie4Ub4sS7X7STw==", false).unwrap(),
+            aes_192_cbc_decrypt(key_192, iv_128, "3wviCl5mie4Ub4sS7X7STw==", false).unwrap(),
             "Hey Doc"
         );
 
         // AES CBC 256 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-256-cbc --base64 -K '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_encrypt(256, key_256, iv_128, "Hey Doc", false).unwrap(),
+            aes_256_cbc_encrypt(key_256, iv_128, "Hey Doc", false).unwrap(),
             "1wI8/eKQIzIRSdm+eSx4kw=="
         );
 
         // AES CBC 256 decryption
         // echo '1wI8/eKQIzIRSdm+eSx4kw==' | openssl enc -d -aes-256-cbc --base64 -K '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF' -iv '00000000000000000000000000000000'
         assert_eq!(
-            aes_cbc_decrypt(256, key_256, iv_128, "1wI8/eKQIzIRSdm+eSx4kw==", false).unwrap(),
+            aes_256_cbc_decrypt(key_256, iv_128, "1wI8/eKQIzIRSdm+eSx4kw==", false).unwrap(),
             "Hey Doc"
         );
 
@@ -204,42 +199,42 @@ pub fn test() -> Html {
         // AES ECB 128 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-128-ecb --base64 -K '00112233445566778899AABBCCDDEEFF'
         assert_eq!(
-            aes_ecb_encrypt(128, key_128, "Hey Doc", false).unwrap(),
+            aes_128_ecb_encrypt(key_128, "Hey Doc", false).unwrap(),
             "iYb0EyQStjUulA4sfAA4jw=="
         );
 
         // AES ECB 128 decryption
         // echo 'iYb0EyQStjUulA4sfAA4jw==' | openssl enc -d -aes-128-ecb --base64 -K '00112233445566778899AABBCCDDEEFF'
         assert_eq!(
-            aes_ecb_decrypt(128, key_128, "iYb0EyQStjUulA4sfAA4jw==", false).unwrap(),
+            aes_128_ecb_decrypt(key_128, "iYb0EyQStjUulA4sfAA4jw==", false).unwrap(),
             "Hey Doc"
         );
 
         // AES ECB 192 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-192-ecb --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677'
         assert_eq!(
-            aes_ecb_encrypt(192, key_192, "Hey Doc", false).unwrap(),
+            aes_192_ecb_encrypt(key_192, "Hey Doc", false).unwrap(),
             "3wviCl5mie4Ub4sS7X7STw=="
         );
 
-        // AES ECB 128 decryption
+        // AES ECB 192 decryption
         // echo '3wviCl5mie4Ub4sS7X7STw==' | openssl enc -d -aes-192-ecb --base64 -K '00112233445566778899AABBCCDDEEFF0011223344556677'
         assert_eq!(
-            aes_ecb_decrypt(192, key_192, "3wviCl5mie4Ub4sS7X7STw==", false).unwrap(),
+            aes_192_ecb_decrypt(key_192, "3wviCl5mie4Ub4sS7X7STw==", false).unwrap(),
             "Hey Doc"
         );
 
         // AES ECB 256 encryption
         // echo -n 'Hey Doc' | openssl enc -aes-256-ecb --base64 -K '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF'
         assert_eq!(
-            aes_ecb_encrypt(256, key_256, "Hey Doc", false).unwrap(),
+            aes_256_ecb_encrypt(key_256, "Hey Doc", false).unwrap(),
             "1wI8/eKQIzIRSdm+eSx4kw=="
         );
 
-        // AES ECB 128 decryption
+        // AES ECB 256 decryption
         // echo '1wI8/eKQIzIRSdm+eSx4kw==' | openssl enc -d -aes-256-ecb --base64 -K '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF'
         assert_eq!(
-            aes_ecb_decrypt(256, key_256, "1wI8/eKQIzIRSdm+eSx4kw==", false).unwrap(),
+            aes_256_ecb_decrypt(key_256, "1wI8/eKQIzIRSdm+eSx4kw==", false).unwrap(),
             "Hey Doc"
         );
 
