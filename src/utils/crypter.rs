@@ -23,12 +23,9 @@ pub fn des_cbc_encrypt(
     let mut iv_bytes = [0x42; 8];
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer: Vec<u8> = get_buffer(plaintext);
-
     // Encrypt
     let cipher = CbcEncryptor::<Des>::new(&key_bytes_64.into(), &iv_bytes.into());
-    return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
+    return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
 pub fn des_cbc_decrypt(
@@ -45,12 +42,9 @@ pub fn des_cbc_decrypt(
     let mut iv_bytes = [0x42; 8];
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
-    // Get ciphertext as bytes
-    let buffer = decode_input(ciphertext, hex_input).unwrap();
-
     // Decrypt
     let cipher = CbcDecryptor::<Des>::new(&key_bytes_64.into(), &iv_bytes.into());
-    return cbc_decrypt(cipher, buffer);
+    return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
 pub fn des_ecb_encrypt(
@@ -62,12 +56,9 @@ pub fn des_ecb_encrypt(
     let mut key_bytes_64 = [0x42; 8];
     decode_hex_key_64(key, &mut key_bytes_64).unwrap();
 
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer(plaintext);
-
     // Encrypt
     let cipher = EcbEncryptor::<Des>::new(&key_bytes_64.into());
-    return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
+    return ecb_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
 pub fn des_ecb_decrypt(
@@ -79,12 +70,9 @@ pub fn des_ecb_decrypt(
     let mut key_bytes_64 = [0x42; 8];
     decode_hex_key_64(key, &mut key_bytes_64).unwrap();
 
-    // Get ciphertext as bytes
-    let buffer = decode_input(ciphertext, hex_input).unwrap();
-
     // Decrypt
     let cipher = EcbDecryptor::<Des>::new(&key_bytes_64.into());
-    return ecb_decrypt(cipher, buffer);
+    return ecb_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
 pub fn tripledes_keying2_cbc_encrypt(
@@ -101,12 +89,9 @@ pub fn tripledes_keying2_cbc_encrypt(
     let mut iv_bytes = [0x42; 8];
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer(plaintext);
-
     // Encrypt
     let cipher = CbcEncryptor::<TdesEde2>::new(&key_bytes_128.into(), &iv_bytes.into());
-    return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
+    return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying2_cbc_decrypt(
@@ -145,12 +130,9 @@ pub fn tripledes_keying3_cbc_encrypt(
     let mut iv_bytes = [0x42; 8];
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer(plaintext);
-
     // Encrypt
     let cipher = CbcEncryptor::<TdesEde3>::new(&key_bytes_192.into(), &iv_bytes.into());
-    return cbc_encrypt(cipher, buffer, plaintext.len(), hex_output);
+    return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying3_cbc_decrypt(
@@ -167,12 +149,9 @@ pub fn tripledes_keying3_cbc_decrypt(
     let mut iv_bytes = [0x42; 8];
     decode_hex_iv_64(iv, &mut iv_bytes).unwrap();
 
-    // Get ciphertext as bytes
-    let buffer = decode_input(ciphertext, hex_input).unwrap();
-
     // Decrypt
     let cipher = CbcDecryptor::<TdesEde3>::new(&key_bytes_192.into(), &iv_bytes.into());
-    return cbc_decrypt(cipher, buffer);
+    return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
 pub fn tripledes_keying2_ecb_encrypt(
@@ -184,12 +163,9 @@ pub fn tripledes_keying2_ecb_encrypt(
     let mut key_bytes_128 = [0x42; 16];
     decode_hex_key_128(key, &mut key_bytes_128).unwrap();
 
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer(plaintext);
-
     // Encrypt
     let cipher = EcbEncryptor::<TdesEde2>::new(&key_bytes_128.into());
-    return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
+    return ecb_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying2_ecb_decrypt(
@@ -201,12 +177,9 @@ pub fn tripledes_keying2_ecb_decrypt(
     let mut key_bytes_128 = [0x42; 16];
     decode_hex_key_128(key, &mut key_bytes_128).unwrap();
 
-    // Get ciphertext as bytes
-    let buffer = decode_input(ciphertext, hex_input).unwrap();
-
     // Decrypt
     let cipher = EcbDecryptor::<TdesEde2>::new(&key_bytes_128.into());
-    return ecb_decrypt(cipher, buffer);
+    return ecb_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
 pub fn tripledes_keying3_ecb_encrypt(
@@ -218,12 +191,9 @@ pub fn tripledes_keying3_ecb_encrypt(
     let mut key_bytes_192 = [0x42; 24];
     decode_hex_key_192(key, &mut key_bytes_192).unwrap();
 
-    // Copy plaintext to a buffer with a length that is a multiple of 128
-    let buffer = get_buffer(plaintext);
-
     // Encrypt
     let cipher = EcbEncryptor::<TdesEde3>::new(&key_bytes_192.into());
-    return ecb_encrypt(cipher, buffer, plaintext.len(), hex_output);
+    return ecb_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
 pub fn tripledes_keying3_ecb_decrypt(
@@ -235,12 +205,9 @@ pub fn tripledes_keying3_ecb_decrypt(
     let mut key_bytes_192 = [0x42; 24];
     decode_hex_key_192(key, &mut key_bytes_192).unwrap();
 
-    // Get ciphertext as bytes
-    let buffer = decode_input(ciphertext, hex_input).unwrap();
-
     // Decrypt
     let cipher = EcbDecryptor::<TdesEde3>::new(&key_bytes_192.into());
-    return ecb_decrypt(cipher, buffer);
+    return ecb_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
 pub fn aes_128_cbc_encrypt(
@@ -253,15 +220,14 @@ pub fn aes_128_cbc_encrypt(
     let mut key_bytes = [0x42; 16];
     decode_hex_key_128(key, &mut key_bytes).unwrap();
 
-     // Get IV as bytes
-     let mut iv_bytes = [0x42; 16];
-     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+    // Get IV as bytes
+    let mut iv_bytes = [0x42; 16];
+    decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
     // Encrypt
-    let cipher = CbcEncryptor::<Aes128>::new(&key_bytes.into(),&iv_bytes.into());
+    let cipher = CbcEncryptor::<Aes128>::new(&key_bytes.into(), &iv_bytes.into());
     return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
-
 
 pub fn aes_192_cbc_encrypt(
     key: &str,
@@ -273,12 +239,12 @@ pub fn aes_192_cbc_encrypt(
     let mut key_bytes = [0x42; 24];
     decode_hex_key_192(key, &mut key_bytes).unwrap();
 
-     // Get IV as bytes
-     let mut iv_bytes = [0x42; 16];
-     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+    // Get IV as bytes
+    let mut iv_bytes = [0x42; 16];
+    decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
     // Encrypt
-    let cipher = CbcEncryptor::<Aes192>::new(&key_bytes.into(),&iv_bytes.into());
+    let cipher = CbcEncryptor::<Aes192>::new(&key_bytes.into(), &iv_bytes.into());
     return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
@@ -292,17 +258,17 @@ pub fn aes_256_cbc_encrypt(
     let mut key_bytes = [0x42; 32];
     decode_hex_key_256(key, &mut key_bytes).unwrap();
 
-     // Get IV as bytes
-     let mut iv_bytes = [0x42; 16];
-     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+    // Get IV as bytes
+    let mut iv_bytes = [0x42; 16];
+    decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
     // Encrypt
-    let cipher = CbcEncryptor::<Aes256>::new(&key_bytes.into(),&iv_bytes.into());
+    let cipher = CbcEncryptor::<Aes256>::new(&key_bytes.into(), &iv_bytes.into());
     return cbc_encrypt(cipher, get_buffer(plaintext), plaintext.len(), hex_output);
 }
 
 pub fn aes_128_cbc_decrypt(
-   key: &str,
+    key: &str,
     iv: &str,
     ciphertext: &str,
     hex_input: bool,
@@ -310,53 +276,53 @@ pub fn aes_128_cbc_decrypt(
     // Get key as bytes
     let mut key_bytes = [0x42; 16];
     decode_hex_key_128(key, &mut key_bytes).unwrap();
-        
+
     // Get IV as bytes
     let mut iv_bytes = [0x42; 16];
     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
 
     // Decrypt
     let cipher = CbcDecryptor::<Aes128>::new(&key_bytes.into(), &iv_bytes.into());
-            return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
+    return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
 }
 
 pub fn aes_192_cbc_decrypt(
     key: &str,
-     iv: &str,
-     ciphertext: &str,
-     hex_input: bool,
- ) -> Result<String, &'static str> {
-     // Get key as bytes
-     let mut key_bytes = [0x42; 24];
-     decode_hex_key_192(key, &mut key_bytes).unwrap();
-         
-     // Get IV as bytes
-     let mut iv_bytes = [0x42; 16];
-     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
- 
-     // Decrypt
-     let cipher = CbcDecryptor::<Aes192>::new(&key_bytes.into(), &iv_bytes.into());
-             return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
- }
+    iv: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 24];
+    decode_hex_key_192(key, &mut key_bytes).unwrap();
 
- pub fn aes_256_cbc_decrypt(
+    // Get IV as bytes
+    let mut iv_bytes = [0x42; 16];
+    decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+
+    // Decrypt
+    let cipher = CbcDecryptor::<Aes192>::new(&key_bytes.into(), &iv_bytes.into());
+    return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
+}
+
+pub fn aes_256_cbc_decrypt(
     key: &str,
-     iv: &str,
-     ciphertext: &str,
-     hex_input: bool,
- ) -> Result<String, &'static str> {
-     // Get key as bytes
-     let mut key_bytes = [0x42; 32];
-     decode_hex_key_256(key, &mut key_bytes).unwrap();
-         
-     // Get IV as bytes
-     let mut iv_bytes = [0x42; 16];
-     decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
- 
-     // Decrypt
-     let cipher = CbcDecryptor::<Aes256>::new(&key_bytes.into(), &iv_bytes.into());
-             return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
- }
+    iv: &str,
+    ciphertext: &str,
+    hex_input: bool,
+) -> Result<String, &'static str> {
+    // Get key as bytes
+    let mut key_bytes = [0x42; 32];
+    decode_hex_key_256(key, &mut key_bytes).unwrap();
+
+    // Get IV as bytes
+    let mut iv_bytes = [0x42; 16];
+    decode_hex_iv_128(iv, &mut iv_bytes).unwrap();
+
+    // Decrypt
+    let cipher = CbcDecryptor::<Aes256>::new(&key_bytes.into(), &iv_bytes.into());
+    return cbc_decrypt(cipher, decode_input(ciphertext, hex_input).unwrap());
+}
 
 pub fn aes_128_ecb_encrypt(
     key: &str,
