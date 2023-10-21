@@ -120,9 +120,11 @@ textarea.valid {
 /* Style de base pour le champ de texte */
 input[type="text"] {
   width: 100%;
+  max-width: 100%;
   padding: 10px;
   border: 2px solid #ccc;
   border-radius: 5px;
+  box-sizing: border-box;
   font-size: 16px;
   color: #333;
   transition: border-color 0.2s;
@@ -155,6 +157,50 @@ input[type="text"].valid {
   border-color: #4CAF50;
 }
 
+/* ---------------------------- */
+/* SELECT                       */
+/* ---------------------------- */
+
+/* Style de base pour la liste déroulante */
+select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  appearance: none; /* Masque les styles par défaut du navigateur */
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+/* Style lorsqu'on survole la liste déroulante */
+select:hover {
+  border-color: #888;
+}
+
+/* Style lorsque la liste déroulante a le focus */
+select:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  outline: none;
+}
+
+/* Style pour une liste déroulante désactivée */
+select:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+/* Style pour une liste déroulante avec une erreur/validation */
+select.error {
+  border-color: #FF5722;
+}
+
+select.valid {
+  border-color: #4CAF50;
+}
 
 /* ---------------------------- */
 /* BUTTON                       */

@@ -55,7 +55,7 @@ pub fn decode_base64() -> Html {
                 <span>
                     <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
                     {" / " }
-                    <Link<Route> to={Route::Encode}>{ "Decode" }</Link<Route>>
+                    <Link<Route> to={Route::Decode}>{ "Decode" }</Link<Route>>
                     {" / Base 64" }
                 </span>
 
@@ -108,7 +108,7 @@ pub fn decode_url() -> Html {
                 <span>
                     <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
                     {" / " }
-                    <Link<Route> to={Route::Encode}>{ "Decode" }</Link<Route>>
+                    <Link<Route> to={Route::Decode}>{ "Decode" }</Link<Route>>
                     {" / URL Decoding" }
                 </span>
                 <hr />

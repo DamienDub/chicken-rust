@@ -16,8 +16,14 @@ pub fn encrypt() -> Html {
 
     html! {
         <main>
-            <h1>{ "Encrypt with..." }</h1>
-            <div>
+            <br />
+            <br />
+            <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Encrypt" }</span>
+            <hr />
+            
+            <h3>{ "Encrypt with..." }</h3>
+
+            <div style="text-align: center;">
                 <button onclick={to_aes}>{ "AES" }</button>
             </div>
         </main>
@@ -79,7 +85,18 @@ pub fn encrypt_aes() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter an IV, a key some text to encrypt" }</h1>
+
+                <br />
+                <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Encrypt}>{ "Encrypt" }</Link<Route>>
+                    {" / AES" }
+                </span>
+
+                <hr />
+                <br />
 
                 <div>
                     <label for="mode">{ "Mode" }</label>
@@ -95,7 +112,7 @@ pub fn encrypt_aes() -> Html {
                 if *is_cbc {
 
                     <div>
-                        <label for="iv">{ "IV (hexadecimal)" }</label>
+                        <label for="iv">{ "Initial vector (in hexadecimal)" }</label>
                         <br />
                         <input type="text" id="iv" min="32" max="32" value="00000000000000000000000000000000"/>
                     </div>
@@ -104,7 +121,7 @@ pub fn encrypt_aes() -> Html {
                 }
 
                 <div>
-                    <label for="key">{ "Key (hexadecimal)" }</label>
+                    <label for="key">{ "Key (in hexadecimal)" }</label>
                     <br />
                     <input type="text" id="key" min="32" max="64" value="00112233445566778899AABBCCDDEEFF"/>
                 </div>
@@ -125,19 +142,19 @@ pub fn encrypt_aes() -> Html {
                 <div>
                     <label for="ti">{ "Text to encrypt" }</label>
                     <br />
-                    <textarea id="ti" />
+                    <textarea id="ti" placeholder="Any text you want..."/>
                 </div>
 
                 <br />
 
-                <div>
+                <div style="text-align:center">
                     <button {onclick}>{ "Encrypt" }</button>
                 </div>
 
                 <br />
 
                 <div>
-                    <textarea id="to" />
+                    <textarea id="to" placeholder="Here is the AES encrypted output"/>
                 </div>
             </div>
         </main>
