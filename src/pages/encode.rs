@@ -54,7 +54,7 @@ pub fn encode_base64() -> Html {
 
     html! {
         <main>
-            <div>
+            <div >
 
                 <br />
                 <br />
@@ -66,23 +66,21 @@ pub fn encode_base64() -> Html {
                 </span>
 
                 <hr />
-                
-                <div class="io-container">
-                    <div class="io-panel io-panel-left">
-                        <h3>{ "Input text" }</h3>
-                        <textarea id="ti" style="min-height:200px" />                      
-                    </div>
-                    <div class="io-panel io-panel-right">
-                        <h3>{ "Output text" }</h3>
-                        <textarea id="to" style="min-height:200px"/>
-                    </div>
+                <br />
+
+                <textarea id="ti" style="min-height:100px" placeholder="Write the text to encode in here" />                      
+            
+                <br />
+                <br />
+
+                <div style="text-align:center">
+                    <button {onclick} >{ "Encode" }</button>
                 </div>
 
                 <br />
-                <div style="text-align: center;">
-                    <button {onclick} >{ "Encode" }</button>
-                </div> 
 
+                <textarea id="to" style="min-height:100px" placeholder="Here is the base 64 encoded output"/>
+                
             </div>
         </main>
     }
@@ -94,12 +92,12 @@ pub fn encode_url() -> Html {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let ti_textarea = get_textarea_element(&document, "ti");
-        let ti_textarea_content = ti_textarea.value();
+        let ti_input = get_input_element(&document, "ti");
+        let ti_input_content = ti_input.value();
 
-        let to_textarea = get_textarea_element(&document, "to");
+        let to_input = get_input_element(&document, "to");
 
-        to_textarea.set_value(&url_encode(ti_textarea_content.as_str()));
+        to_input.set_value(&url_encode(ti_input_content.as_str()));
     });
 
     html! {
@@ -115,22 +113,22 @@ pub fn encode_url() -> Html {
                     {" / URL Encoding" }
                 </span>
                 <hr />
+                <br />
 
-                <div class="io-container">
-                    <div class="io-panel io-panel-left">
-                        <h3>{ "Input text" }</h3>
-                        <textarea id="ti" />                      
-                    </div>
-                    <div class="io-panel io-panel-right">
-                        <h3>{ "Output text" }</h3>
-                        <textarea id="to"/>
-                    </div>
-                </div>
+
+                <input type="text" id="ti" placeholder="Write down the URL to encode in here"/>
 
                 <br />
+                <br />
+
                 <div style="text-align: center;">
                     <button {onclick} >{ "Encode" }</button>
                 </div>
+
+                <br />
+
+                <input type="text" id="to" placeholder="Here is the URL encoded output"/>
+                
             </div>
         </main>
     }

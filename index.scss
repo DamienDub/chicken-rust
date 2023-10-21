@@ -65,10 +65,100 @@ a {
   color: #e6f2ff;
 }
 
-textarea {
-  width: 100%;
+/* ---------------------------- */
+/* TEXT AREA                    */
+/* ---------------------------- */
 
+/* Style de base pour le textarea */
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  resize: vertical; /* Permet de redimensionner verticalement */
 }
+
+/* Style lorsqu'on survole le textarea */
+textarea:hover {
+  border-color: #888;
+}
+
+/* Style lorsque le textarea a le focus */
+textarea:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  outline: none;
+}
+
+/* Style pour un textarea désactivé */
+textarea:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+/* Style pour un textarea en lecture seule */
+textarea[readonly] {
+  background-color: #f0f0f0;
+}
+
+/* Style pour un textarea avec une erreur/validation */
+textarea.error {
+  border-color: #FF5722;
+}
+
+textarea.valid {
+  border-color: #4CAF50;
+}
+
+/* ---------------------------- */
+/* TEXT INPUT                   */
+/* ---------------------------- */
+
+/* Style de base pour le champ de texte */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+/* Style lorsqu'on survole le champ de texte */
+input[type="text"]:hover {
+  border-color: #888;
+}
+
+/* Style lorsque le champ de texte a le focus */
+input[type="text"]:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  outline: none;
+}
+
+/* Style pour un champ de texte désactivé */
+input[type="text"]:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+/* Style pour un champ de texte avec une erreur/validation */
+input[type="text"].error {
+  border-color: #FF5722;
+}
+
+input[type="text"].valid {
+  border-color: #4CAF50;
+}
+
+
+/* ---------------------------- */
+/* BUTTON                       */
+/* ---------------------------- */
 
 button {
   display: inline-block;
@@ -94,6 +184,10 @@ button:active {
   transform: translateY(-2px);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
+
+/* ---------------------------- */
+/* TOOLTIP                      */
+/* ---------------------------- */
 
 .tooltip {
   position: relative;
@@ -139,6 +233,11 @@ button:active {
   line-height: 18px;
   cursor: default;
 }
+
+
+/* ---------------------------- */
+/* CONTAINER                    */
+/* ---------------------------- */
 
 
 .io-container {
