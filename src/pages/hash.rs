@@ -16,11 +16,19 @@ pub fn hash() -> Html {
 
     html! {
         <main>
-            <h1>{ "Hash with..." }</h1>
-            <div>
+
+            <br />
+            <br />
+            <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Hash" }</span>
+            <hr />
+            
+            <h3>{ "Hash with..." }</h3>
+
+            <div style="text-align:center">
                  <button onclick={to_sha1}>{ "SHA-1" }</button>
             </div>
-            <div>
+            
+            <div style="text-align:center">
                  <button onclick={to_sha256}>{ "SHA-256" }</button>
             </div>
         </main>
@@ -44,22 +52,32 @@ pub fn hash_sha1() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text to hash" }</h1>
-
-                <div>
-                    <textarea id="ti" />
-                </div>
 
                 <br />
+                <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Hash}>{ "Hash" }</Link<Route>>
+                    {" / SHA-1" }
+                </span>
 
-                <div>
+                <hr />
+                <br />
+
+                <textarea id="ti" style="min-height:100px" placeholder="Any text to hash in here..." />
+                
+                <br />
+                <br />
+
+                <div style="text-align:center">
                     <button {onclick}>{ "Hash" }</button>
                 </div>
 
                 <br />
 
                 <div>
-                    <textarea id="to" />
+                    <textarea id="to" style="min-height:100px" placeholder="Here is the SHA-1 hash output"/>
                 </div>
             </div>
         </main>
@@ -83,22 +101,34 @@ pub fn hash_sha256() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some text to hash" }</h1>
+                
+                <br />
+                <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Hash}>{ "Hash" }</Link<Route>>
+                    {" / SHA-256" }
+                </span>
 
-                <div>
-                    <textarea id="ti" />
-                </div>
-
+                <hr />
                 <br />
 
                 <div>
+                    <textarea id="ti"  style="min-height:100px" placeholder="Any text to hash in here..."/>
+                </div>
+
+                <br />
+                <br />
+
+                <div style="text-align:center">
                     <button onclick={onclick}>{ "Hash" }</button>
                 </div>
 
                 <br />
 
                 <div>
-                    <textarea id="to" />
+                    <textarea id="to" style="min-height:100px" placeholder="Here is the SHA-256 hash output"/>
                 </div>
             </div>
         </main>
