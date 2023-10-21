@@ -37,7 +37,16 @@ pub fn home() -> Html {
 
     html! {
         <main>
-            <h1>{ "Chicken Rust" }</h1>
+            
+            <br />
+
+            <div style="text-align:center">
+                <img src="img/logo.svg" alt="logo" height="200"/>
+            </div>
+
+            <br />
+            <br />
+
             <h2>
 
                 <u class="tooltip">{ "Fast" }
@@ -64,8 +73,9 @@ pub fn home() -> Html {
             <hr />
             <br />
             <br />
+            <br />
 
-            <h3>{ "What are we doing today ?" }</h3>
+            <h2>{ "What are we doing today ?" }</h2>
 
             <br />
 

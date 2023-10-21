@@ -18,8 +18,10 @@ pub fn encrypt() -> Html {
             <br />
             <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Decrypt" }</span>
             <hr />
+            <br />
+            <br />
             
-            <h3>{ "Decrypt with..." }</h3>
+            <h2>{ "Decrypt with..." }</h2>
 
             <div style="text-align: center;">
                 <button onclick={to_aes}>{ "AES" }</button>

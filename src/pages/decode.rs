@@ -17,13 +17,26 @@ pub fn decode() -> Html {
     html! {
         <main>
         <div>
-            <h1>{ "Decode with" }</h1>
-            <div>
-                 <button onclick={to_base64}>{ "Base 64" }</button>
+            
+            <br />
+            <br />
+            <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Decode" }</span>
+            <hr />
+            <br />
+            <br />
+            
+            <h2>{ "Decode with..." }</h2>
+
+            <div style="text-align: center;">
+                <div>
+                    <button onclick={to_base64}>{ "Base 64" }</button>
+                </div>
+                <br />
+                <div>
+                    <button onclick={to_url}>{ "URL encoding" }</button>
+                </div>
             </div>
-            <div>
-                <button onclick={to_url}>{ "URL decoding" }</button>
-            </div>
+
         </div>
         </main>
     }

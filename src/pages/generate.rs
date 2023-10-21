@@ -18,8 +18,10 @@ pub fn generate() -> Html {
             <br />
             <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Generate" }</span>
             <hr />
+            <br />
+            <br />
             
-            <h3>{ "What would you like to generate ?" }</h3>
+            <h2>{ "What would you like to generate ?" }</h2>
 
             <div style="text-align:center">
                   <button onclick={to_random_string}>{ "A random string" }</button>

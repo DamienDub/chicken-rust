@@ -21,13 +21,15 @@ pub fn hash() -> Html {
             <br />
             <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Hash" }</span>
             <hr />
+            <br />
+            <br />
             
-            <h3>{ "Hash with..." }</h3>
+            <h2>{ "Hash with..." }</h2>
 
             <div style="text-align:center">
                  <button onclick={to_sha1}>{ "SHA-1" }</button>
             </div>
-            
+
             <div style="text-align:center">
                  <button onclick={to_sha256}>{ "SHA-256" }</button>
             </div>

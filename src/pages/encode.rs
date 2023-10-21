@@ -21,8 +21,10 @@ pub fn encode() -> Html {
             <br />
             <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Encode" }</span>
             <hr />
+            <br />
+            <br />
             
-            <h3>{ "What type of encoding are we looking for ?" }</h3>
+            <h2>{ "What type of encoding are we looking for ?" }</h2>
 
             <div style="text-align: center;">
                 <div>
