@@ -109,6 +109,11 @@ pub fn home() -> Html {
                 <div>
                     <button onclick={to_generate}>{ "Text generation" }</button>
                 </div>
+
+                <br />
+                <br />
+                <small>{"Version 1.0.0, logo by "}</small><a href="https://fr.linkedin.com/in/lucie-anceaume"><small>{"Lucie Anceaume"}</small></a>
+
             </div>
 
         </main>
