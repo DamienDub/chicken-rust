@@ -114,11 +114,12 @@ textarea.valid {
 }
 
 /* ---------------------------- */
-/* TEXT INPUT                   */
+/* TEXT AND NUMBER INPUT        */
 /* ---------------------------- */
 
 /* Style de base pour le champ de texte */
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
   width: 100%;
   max-width: 100%;
   padding: 10px;
@@ -131,31 +132,73 @@ input[type="text"] {
 }
 
 /* Style lorsqu'on survole le champ de texte */
-input[type="text"]:hover {
+input[type="text"]:hover,
+input[type="number"]:hover {
   border-color: #888;
 }
 
 /* Style lorsque le champ de texte a le focus */
-input[type="text"]:focus {
+input[type="text"]:focus, input[type="number"]:focus {
   border-color: #4CAF50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
   outline: none;
 }
 
 /* Style pour un champ de texte désactivé */
-input[type="text"]:disabled {
+input[type="text"]:disabled, input[type="number"]:disabled {
   background-color: #f0f0f0;
   cursor: not-allowed;
 }
 
 /* Style pour un champ de texte avec une erreur/validation */
-input[type="text"].error {
+input[type="text"].error, input[type="number"].error {
   border-color: #FF5722;
 }
 
-input[type="text"].valid {
+input[type="text"].valid, input[type="number"].valid {
   border-color: #4CAF50;
 }
+
+/* ---------------------------- */
+/* CHECKBOX INPUT               */
+/* ---------------------------- */
+
+/* Style de base pour la case à cocher réelle (input) */
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  appearance: none; /* Masque les styles par défaut du navigateur */
+  cursor: pointer;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.2s;
+}
+
+/* Style du point (le marqueur de case cochée) */
+input[type="checkbox"]:checked::before {
+  content: "✔";
+  font-size: 16px;
+  color: #4CAF50;
+  display: block;
+  text-align: center;
+  line-height: 20px;
+}
+
+/* Style lorsqu'on survole la case à cocher */
+input[type="checkbox"]:hover {
+  border-color: #888;
+}
+
+/* Style pour une case à cocher avec une erreur/validation */
+input[type="checkbox"].error {
+  border-color: #FF5722;
+}
+
+input[type="checkbox"].valid {
+  border-color: #4CAF50;
+}
+
 
 /* ---------------------------- */
 /* SELECT                       */

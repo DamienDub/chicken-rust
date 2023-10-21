@@ -13,10 +13,18 @@ pub fn generate() -> Html {
 
     html! {
         <main>
-            <h1>{ "What would you like to generate ?" }</h1>
-            <div>
+
+            <br />
+            <br />
+            <span><Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> {" / Generate" }</span>
+            <hr />
+            
+            <h3>{ "What would you like to generate ?" }</h3>
+
+            <div style="text-align:center">
                   <button onclick={to_random_string}>{ "A random string" }</button>
             </div>
+            
         </main>
     }
 }
@@ -50,12 +58,24 @@ pub fn generate_random_string() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Generate a string with" }</h1>
+               
+                <br />
+                <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Generate}>{ "Generate" }</Link<Route>>
+                    {" / Random string" }
+                </span>
+
+                <hr />
+                <br />
+
 
                 <div>
                     <label for="length">{ "Number of characters" }</label>
                     <br />
-                    <input type="number" id="length" min="1" max="128" step="1" value="8"/>
+                    <input type="number" id="length" min="1" max="128" step="1" value="16"/>
                 </div>
 
                 <br />
@@ -63,7 +83,7 @@ pub fn generate_random_string() -> Html {
                 <div>
                     <label for="withLowercase">{ "With lowercase characters" }</label>
                     <br />
-                    <input type="checkbox" id="withLowercase" checked=false />
+                    <input type="checkbox" id="withLowercase" checked=true />
                 </div>
 
                 <br />
@@ -71,7 +91,7 @@ pub fn generate_random_string() -> Html {
                 <div>
                     <label for="withUppercase">{ "With uppercase characters" }</label>
                     <br />
-                    <input type="checkbox" id="withUppercase" />
+                    <input type="checkbox" id="withUppercase" checked=true/>
                 </div>
 
                 <br />
@@ -79,19 +99,19 @@ pub fn generate_random_string() -> Html {
                 <div>
                     <label for="withNumbers">{ "With numbers" }</label>
                     <br />
-                    <input type="checkbox" id="withNumbers" />
+                    <input type="checkbox" id="withNumbers" checked=true />
                 </div>
 
                 <br />
 
-                <div>
+                <div style="text-align:center">
                     <button {onclick}>{ "Generate" }</button>
                 </div>
 
                 <br />
 
                 <div>
-                    <textarea id="to" />
+                    <textarea id="to" style="min-height:100px" placeholder="Here is the generated text output"/>
                 </div>
             </div>
         </main>
