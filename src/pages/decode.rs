@@ -49,23 +49,33 @@ pub fn decode_base64() -> Html {
     html! {
         <main>
             <div>
-                <h1>{ "Please enter some Base 64 text" }</h1>
 
-                <div>
-                    <textarea id="ti" />
+                <br />
+                <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Encode}>{ "Decode" }</Link<Route>>
+                    {" / Base 64" }
+                </span>
+
+                <hr />
+                <br />
+
+                <textarea id="ti" style="min-height:100px" placeholder="Write the text to decode in here" />                      
+            
+                <br />
+                <br />
+
+                <div style="text-align:center">
+                    <button {onclick} >{ "Decode" }</button>
                 </div>
 
                 <br />
 
-                <div>
-                    <button {onclick}>{ "Decode" }</button>
-                </div>
+                <textarea id="to" style="min-height:100px" placeholder="Here is the base 64 decoded output"/>
 
-                <br />
 
-                <div>
-                    <textarea id="to" />
-                </div>
             </div>
         </main>
     }
@@ -77,37 +87,46 @@ pub fn decode_url() -> Html {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
-        let ti_textarea = get_textarea_element(&document, "ti");
-        let ti_textarea_content = ti_textarea.value();
+        let ti_input = get_input_element(&document, "ti");
+        let ti_input_content = ti_input.value();
 
-        let to_textarea = get_textarea_element(&document, "to");
+        let to_input = get_input_element(&document, "to");
 
-        match url_decode(ti_textarea_content.as_str()) {
-            Ok(result) => to_textarea.set_value(result.as_str()),
-            Err(error) => to_textarea.set_value(error),
+        match url_decode(ti_input_content.as_str()) {
+            Ok(result) => to_input.set_value(result.as_str()),
+            Err(error) => to_input.set_value(error),
         }
     });
 
     html! {
         <main>
             <div>
-                <h1>{ "Please enter an encoded URL" }</h1>
 
-                <div>
-                    <textarea id="ti" />
+
+                <br />
+                <br />
+                <span>
+                    <Link<Route> to={Route::Home}>{ "Home" }</Link<Route>> 
+                    {" / " }
+                    <Link<Route> to={Route::Encode}>{ "Decode" }</Link<Route>>
+                    {" / URL Decoding" }
+                </span>
+                <hr />
+                <br />
+
+                <input type="text" id="ti" placeholder="Write down the URL to decode in here"/>
+
+                <br />
+                <br />
+
+                <div style="text-align: center;">
+                    <button {onclick} >{ "Decode" }</button>
                 </div>
 
                 <br />
 
-                <div>
-                    <button {onclick}>{ "Decode" }</button>
-                </div>
+                <input type="text" id="to" placeholder="Here is the URL decoded output"/>
 
-                <br />
-
-                <div>
-                    <textarea id="to" />
-                </div>
             </div>
         </main>
     }
